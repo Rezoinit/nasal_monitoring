@@ -16,7 +16,7 @@ The system is designed around three principles:
 
 ---
 
-## Try It
+## Play with the sensor
 
 Connect your XIAO nRF52840 Plus and open the web app in Chrome:
 
