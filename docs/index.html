@@ -10,7 +10,7 @@
 :root{
   --bg:#070b10;--surface:#0e1520;--s2:#141d2b;--border:#1c2a3a;
   --text:#dde6f0;--muted:#4a6278;--accent:#5eb8ff;
-  --left:#52d9a0;--right:#c084fc;--both:#fbbf24;
+  --left:#f5c842;--right:#4a90e2;--both:#fbbf24;
   --danger:#f87171;--success:#4ade80;--warn:#fb923c;
   --mono:'DM Mono',monospace;--body:'Outfit',sans-serif;--display:'Fraunces',serif;
 }
@@ -336,8 +336,8 @@ canvas+canvas{margin-top:7px}
   <h2 style="font-family:var(--display);font-size:22px;font-weight:300;margin-bottom:5px" id="cd-name">–</h2>
   <p style="font-size:13px;color:var(--muted);text-align:center;white-space:pre-line" id="cd-desc">–</p>
   <div class="mic-bars">
-    <div class="mb-item"><div class="mb-track"><div class="mb-fill" id="mb1" style="height:0%;background:var(--left)"></div></div><div class="mb-tag">M1</div></div>
-    <div class="mb-item"><div class="mb-track"><div class="mb-fill" id="mb2" style="height:0%;background:var(--right)"></div></div><div class="mb-tag">M2</div></div>
+    <div class="mb-item"><div class="mb-track"><div class="mb-fill" id="mb1" style="height:0%;background:#f5c842"></div></div><div class="mb-tag">M1</div></div>
+    <div class="mb-item"><div class="mb-track"><div class="mb-fill" id="mb2" style="height:0%;background:#4a90e2"></div></div><div class="mb-tag">M2</div></div>
   </div>
   <button class="btn btn-ghost btn-sm" style="margin-top:20px" onclick="skipToSummary()">Finish Early → See Results</button>
 </div>
@@ -1152,8 +1152,8 @@ function updateLive(m1,m2){
 // ═══════════════════════════════════════════════
 function renderWaves(){
   if(ctx1&&ctx2){
-    drawWave(ctx1,waveData1,'#52d9a0',thresholds.mic1);
-    drawWave(ctx2,waveData2,'#c084fc',thresholds.mic2);
+    drawWave(ctx1,waveData1,'#f5c842',thresholds.mic1);
+    drawWave(ctx2,waveData2,'#4a90e2',thresholds.mic2);
   }
   requestAnimationFrame(renderWaves);
 }
