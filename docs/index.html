@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nasal Monitor</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── RESET & ROOT ─────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:         #070b10;
+  --surface:    #0e1520;
+  --surface2:   #141d2b;
+  --border:     #1c2a3a;
+  --text:       #dde6f0;
+  --muted:      #4a6278;
+  --accent:     #5eb8ff;
+  --left:       #52d9a0;
+  --right:      #c084fc;
+  --both:       #fbbf24;
+  --none:       #4a6278;
+  --danger:     #f87171;
+  --radius:     20px;
+  --mono:       'DM Mono', monospace;
+  --body:       'Outfit', sans-serif;
+  --display:    'Fraunces', serif;
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  overflow: hidden;
+}
+
+/* ── BACKGROUND TEXTURE ───────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(94,184,255,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 90%, rgba(192,132,252,0.04) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(94,184,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(94,184,255,0.015) 1px, transparent 1px);
+  background-size: 56px 56px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── SCREENS ──────────────────────────────────────────── */
+.screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s ease;
+}
+.screen.active { opacity: 1; pointer-events: all; }
+
+/* ── WORDMARK ─────────────────────────────────────────── */
+.wordmark {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 5px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 52px;
+}
+
+/* ── WELCOME ──────────────────────────────────────────── */
+.welcome-headline {
+  font-family: var(--display);
+  font-size: clamp(42px, 6vw, 72px);
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: -2px;
+  text-align: center;
+  margin-bottom: 20px;
+  color: var(--text);
+}
+.welcome-headline em {
+  font-style: italic;
+  color: var(--accent);
+}
+.welcome-sub {
+  font-size: 16px;
+  color: var(--muted);
+  line-height: 1.7;
+  text-align: center;
+  max-width: 420px;
+  margin-bottom: 56px;
+}
+
+/* ── BUTTONS ──────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--accent);
+  color: #070b10;
+  border: none;
+  border-radius: 100px;
+  padding: 18px 44px;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: var(--body);
+  cursor: pointer;
+  letter-spacing: 0.2px;
+  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 0 0 0 rgba(94,184,255,0.4);
+}
+.btn:hover {
+  opacity: 0.92;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(94,184,255,0.2);
+}
+.btn:active { transform: translateY(0); }
+.btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; }
+.btn-ghost {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  box-shadow: none;
+}
+.btn-ghost:hover { border-color: var(--text); color: var(--text); box-shadow: none; }
+
+/* Pulsing connect button */
+.btn-connect {
+  animation: connect-pulse 2.5s ease-in-out infinite;
+}
+@keyframes connect-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(94,184,255,0.5); }
+  50%       { box-shadow: 0 0 0 20px rgba(94,184,255,0); }
+}
+
+/* ── CHROME NOTICE ────────────────────────────────────── */
+.chrome-notice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 10px 20px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+.chrome-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #34a853;
+  box-shadow: 0 0 6px #34a853;
+  flex-shrink: 0;
+}
+
+/* ── CONNECTING ───────────────────────────────────────── */
+.spinner-wrap { margin-bottom: 32px; }
+.spinner {
+  width: 56px; height: 56px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.connecting-title {
+  font-size: 28px;
+  font-weight: 300;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.connecting-sub {
+  font-size: 14px;
+  color: var(--muted);
+  text-align: center;
+  font-family: var(--mono);
+  letter-spacing: 1px;
+}
+
+/* ── CALIBRATION ──────────────────────────────────────── */
+.cal-progress-bar {
+  width: 100%;
+  max-width: 560px;
+  height: 2px;
+  background: var(--border);
+  border-radius: 10px;
+  margin-bottom: 56px;
+  overflow: hidden;
+}
+.cal-progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 10px;
+  transition: width 0.6s ease;
+}
+
+/* ── GET READY (calibration) ──────────────────────────── */
+.scenario-badge {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 4px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.scenario-icon {
+  font-size: 72px;
+  margin-bottom: 24px;
+  display: block;
+  transition: color 0.4s;
+}
+.scenario-name {
+  font-family: var(--display);
+  font-size: 42px;
+  font-weight: 300;
+  letter-spacing: -1px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+.scenario-desc {
+  font-size: 16px;
+  color: var(--muted);
+  line-height: 1.8;
+  text-align: center;
+  max-width: 440px;
+  white-space: pre-line;
+  margin-bottom: 48px;
+}
+.space-hint {
+  margin-top: 18px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+kbd {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 2px 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text);
+}
+
+/* ── CIRCULAR COUNTDOWN ───────────────────────────────── */
+.circle-wrap {
+  position: relative;
+  width: 240px;
+  height: 240px;
+  margin-bottom: 36px;
+}
+.circle-svg {
+  width: 240px;
+  height: 240px;
+  transform: rotate(-90deg);
+}
+.circle-track { fill: none; stroke: var(--border); stroke-width: 3; }
+.circle-fill  {
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 659;
+  stroke-dashoffset: 659;
+  transition: stroke-dashoffset 1s linear, stroke 0.5s;
+}
+.circle-inner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.circle-num {
+  font-family: var(--mono);
+  font-size: 60px;
+  font-weight: 300;
+  line-height: 1;
+  transition: color 0.5s;
+}
+.circle-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+/* Breath guide ring */
+.breath-ring {
+  position: absolute;
+  inset: 24px;
+  border-radius: 50%;
+  border: 1.5px solid transparent;
+  pointer-events: none;
+}
+.breath-ring.active {
+  animation: breathe-ring 4s ease-in-out infinite;
+}
+@keyframes breathe-ring {
+  0%, 100% { transform: scale(0.9);  opacity: 0.2; }
+  50%       { transform: scale(1.1); opacity: 0.7; }
+}
+
+/* ── LIVE MIC BARS (calibration) ──────────────────────── */
+.mic-live {
+  display: flex;
+  gap: 20px;
+  margin-top: 32px;
+}
+.mic-live-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.mic-track {
+  width: 5px;
+  height: 64px;
+  background: var(--border);
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+}
+.mic-fill {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  border-radius: 10px;
+  transition: height 0.1s;
+}
+.mic-tag {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+
+/* ── REST SCREEN ──────────────────────────────────────── */
+.rest-check { font-size: 56px; margin-bottom: 24px; }
+.rest-title {
+  font-family: var(--display);
+  font-size: 40px;
+  font-weight: 300;
+  margin-bottom: 12px;
+}
+.rest-sub { font-size: 15px; color: var(--muted); margin-bottom: 40px; }
+.rest-count {
+  font-family: var(--mono);
+  font-size: 64px;
+  color: var(--accent);
+}
+
+/* ── LIVE BREATHING SCREEN ────────────────────────────── */
+.live-header {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+.live-title {
+  font-family: var(--display);
+  font-size: 28px;
+  font-weight: 300;
+  letter-spacing: -0.5px;
+}
+.session-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 8px 16px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.rec-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--danger);
+  box-shadow: 0 0 6px var(--danger);
+  animation: blink 1.2s ease-in-out infinite;
+}
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+/* ── STATS ROW ────────────────────────────────────────── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  width: 100%;
+  max-width: 900px;
+  margin-bottom: 20px;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px 20px;
+  transition: border-color 0.3s;
+}
+.stat-card.highlight { border-color: var(--accent); }
+.stat-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.stat-value {
+  font-family: var(--mono);
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1;
+  transition: color 0.3s;
+}
+.stat-unit {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+  font-family: var(--mono);
+}
+
+/* ── NOSTRIL INDICATOR ────────────────────────────────── */
+.nostril-wrap {
+  width: 100%;
+  max-width: 900px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px 24px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transition: border-color 0.3s;
+}
+.nostril-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.nostril-pills {
+  display: flex;
+  gap: 10px;
+  flex: 1;
+}
+.nostril-pill {
+  flex: 1;
+  padding: 12px 16px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.25s ease;
+  color: var(--muted);
+}
+.nostril-pill.active-left {
+  background: rgba(82,217,160,0.12);
+  border-color: var(--left);
+  color: var(--left);
+}
+.nostril-pill.active-right {
+  background: rgba(192,132,252,0.12);
+  border-color: var(--right);
+  color: var(--right);
+}
+.nostril-pill.active-both {
+  background: rgba(251,191,36,0.12);
+  border-color: var(--both);
+  color: var(--both);
+}
+.nostril-intensity {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* ── WAVEFORM ─────────────────────────────────────────── */
+.waveform-wrap {
+  width: 100%;
+  max-width: 900px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px 24px;
+}
+.wave-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.wave-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+canvas {
+  width: 100%;
+  height: 100px;
+  display: block;
+  border-radius: 8px;
+}
+canvas + canvas { margin-top: 12px; }
+
+/* ── DISCONNECT BTN ───────────────────────────────────── */
+.disconnect-btn {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 8px 18px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: border-color 0.2s, color 0.2s;
+  z-index: 10;
+  display: none;
+}
+.disconnect-btn:hover { border-color: var(--danger); color: var(--danger); }
+.disconnect-btn.visible { display: block; }
+
+/* ── ERROR BANNER ─────────────────────────────────────── */
+.error-banner {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--surface);
+  border: 1px solid var(--danger);
+  border-radius: 100px;
+  padding: 12px 28px;
+  font-size: 13px;
+  color: var(--danger);
+  font-family: var(--mono);
+  transition: transform 0.3s ease;
+  z-index: 100;
+  white-space: nowrap;
+}
+.error-banner.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- ══ SCREEN: WELCOME ════════════════════════════════════ -->
+<div class="screen active" id="screen-welcome">
+  <div class="wordmark">Nasal Monitor · Research Tool</div>
+
+  <h1 class="welcome-headline">
+    Breathe.<br>
+    We'll <em>listen.</em>
+  </h1>
+  <p class="welcome-sub">
+    Plug in your sensor, complete a short calibration,
+    and explore your nasal breathing in real time.
+  </p>
+
+  <button class="btn btn-connect" id="btn-connect" onclick="connectDevice()">
+    <span>⬡</span> Connect Device
+  </button>
+
+  <div class="chrome-notice">
+    <div class="chrome-dot"></div>
+    Requires Google Chrome · Web Serial API
+  </div>
+</div>
+
+<!-- ══ SCREEN: CONNECTING ════════════════════════════════ -->
+<div class="screen" id="screen-connecting">
+  <div class="spinner-wrap"><div class="spinner"></div></div>
+  <p class="connecting-title">Connecting…</p>
+  <p class="connecting-sub" id="conn-status-text">Opening serial port</p>
+</div>
+
+<!-- ══ SCREEN: GET READY (calibration) ══════════════════ -->
+<div class="screen" id="screen-ready">
+  <div class="cal-progress-bar">
+    <div class="cal-progress-fill" id="cal-prog-fill" style="width:0%"></div>
+  </div>
+  <div class="scenario-badge" id="ready-badge">Scenario 1 of 3</div>
+  <span class="scenario-icon" id="ready-icon">◎</span>
+  <h2 class="scenario-name" id="ready-name">–</h2>
+  <p class="scenario-desc" id="ready-desc">–</p>
+  <button class="btn" id="btn-ready" onclick="participantReady()" style="border-radius:100px;">
+    I'm Ready — Start
+  </button>
+  <div class="space-hint">press <kbd>space</kbd> or click to begin</div>
+</div>
+
+<!-- ══ SCREEN: COUNTING DOWN (calibration) ══════════════ -->
+<div class="screen" id="screen-countdown">
+  <div class="cal-progress-bar">
+    <div class="cal-progress-fill" id="cal-prog-fill2" style="width:0%"></div>
+  </div>
+
+  <div class="circle-wrap">
+    <svg class="circle-svg" viewBox="0 0 240 240">
+      <circle class="circle-track" cx="120" cy="120" r="105"/>
+      <circle class="circle-fill" id="circle-fill" cx="120" cy="120" r="105"/>
+    </svg>
+    <div class="breath-ring" id="breath-ring"></div>
+    <div class="circle-inner">
+      <div class="circle-num" id="circle-num">–</div>
+      <div class="circle-label">seconds</div>
+    </div>
+  </div>
+
+  <h2 class="scenario-name" id="cd-name" style="font-size:28px">–</h2>
+  <p class="scenario-desc" id="cd-desc" style="font-size:14px;margin-bottom:0">–</p>
+
+  <div class="mic-live">
+    <div class="mic-live-item">
+      <div class="mic-track">
+        <div class="mic-fill" id="mic1-bar" style="height:0%;background:var(--left)"></div>
+      </div>
+      <div class="mic-tag">M1</div>
+    </div>
+    <div class="mic-live-item">
+      <div class="mic-track">
+        <div class="mic-fill" id="mic2-bar" style="height:0%;background:var(--right)"></div>
+      </div>
+      <div class="mic-tag">M2</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCREEN: REST ══════════════════════════════════════ -->
+<div class="screen" id="screen-rest">
+  <div class="rest-check">✓</div>
+  <h2 class="rest-title">Well done.</h2>
+  <p class="rest-sub" id="rest-sub">Short break before next scenario.</p>
+  <div class="rest-count" id="rest-count">5</div>
+</div>
+
+<!-- ══ SCREEN: LIVE BREATHING ════════════════════════════ -->
+<div class="screen" id="screen-live">
+  <button class="disconnect-btn visible" onclick="disconnectDevice()">✕ Disconnect</button>
+
+  <div class="live-header">
+    <div class="live-title">Live Breathing</div>
+    <div class="session-badge">
+      <div class="rec-dot"></div>
+      <span id="session-timer">0:00</span>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card" id="card-rate">
+      <div class="stat-label">Breath Rate</div>
+      <div class="stat-value" id="stat-rate" style="color:var(--accent)">–</div>
+      <div class="stat-unit">breaths / min</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total Breaths</div>
+      <div class="stat-value" id="stat-total">0</div>
+      <div class="stat-unit">since start</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">MIC1 · Yellow</div>
+      <div class="stat-value" id="stat-m1" style="color:var(--left)">–</div>
+      <div class="stat-unit">raw amplitude</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">MIC2 · Blue</div>
+      <div class="stat-value" id="stat-m2" style="color:var(--right)">–</div>
+      <div class="stat-unit">raw amplitude</div>
+    </div>
+  </div>
+
+  <!-- Nostril indicator -->
+  <div class="nostril-wrap" id="nostril-wrap">
+    <span class="nostril-label">Nostril</span>
+    <div class="nostril-pills">
+      <div class="nostril-pill" id="pill-left">← Left</div>
+      <div class="nostril-pill" id="pill-both">Both</div>
+      <div class="nostril-pill" id="pill-right">Right →</div>
+    </div>
+    <div class="nostril-intensity" id="nostril-intensity">–</div>
+  </div>
+
+  <!-- Waveform -->
+  <div class="waveform-wrap">
+    <div class="wave-labels">
+      <span class="wave-label" style="color:var(--left)">▸ MIC1 Yellow</span>
+      <span class="wave-label" style="color:var(--right)">▸ MIC2 Blue</span>
+    </div>
+    <canvas id="wave1" height="100"></canvas>
+    <canvas id="wave2" height="100"></canvas>
+  </div>
+</div>
+
+<!-- ── ERROR BANNER ── -->
+<div class="error-banner" id="error-banner">–</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// CALIBRATION SCENARIOS (3 quick ones for the web app)
+// ═══════════════════════════════════════════════════════
+const SCENARIOS = [
+  {
+    id:       'baseline',
+    name:     'Baseline',
+    icon:     '◎',
+    color:    'var(--accent)',
+    desc:     'Breathe normally through your nose.\nSit still and relax.',
+    duration: 20,
+  },
+  {
+    id:       'left_nostril',
+    name:     'Left Nostril',
+    icon:     '◑',
+    color:    'var(--left)',
+    desc:     'Close your right nostril with a finger.\nBreathe only through your left nostril.',
+    duration: 15,
+  },
+  {
+    id:       'right_nostril',
+    name:     'Right Nostril',
+    icon:     '◐',
+    color:    'var(--right)',
+    desc:     'Close your left nostril with a finger.\nBreathe only through your right nostril.',
+    duration: 15,
+  },
+];
+
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+let port, reader, lineBuffer = '';
+let isConnected   = false;
+let calIdx        = 0;
+let calData       = { baseline: [], left_nostril: [], right_nostril: [] };
+let currentCalId  = null;
+let calTimer      = null;
+let thresholds    = { mic1: 80, mic2: 80 };
+
+// Live display state
+let waveData1      = new Array(200).fill(0);
+let waveData2      = new Array(200).fill(0);
+let sessionStart   = null;
+let sessionTimer   = null;
+let breathCount    = 0;
+let lastBreathSide = 'none';
+let breathEvents   = [];   // { time, side } for rate calculation
+let latestM1       = 0;
+let latestM2       = 0;
+
+// Canvas refs
+let ctx1, ctx2;
+
+// ═══════════════════════════════════════════════════════
+// SCREEN MANAGEMENT
+// ═══════════════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ═══════════════════════════════════════════════════════
+// WEB SERIAL CONNECTION
+// ═══════════════════════════════════════════════════════
+async function connectDevice() {
+  if (!('serial' in navigator)) {
+    showError('Web Serial not supported. Please use Google Chrome.');
+    return;
+  }
+  try {
+    showScreen('screen-connecting');
+    setConnStatus('Requesting port access…');
+
+    port = await navigator.serial.requestPort();
+    setConnStatus('Opening serial connection…');
+    await port.open({ baudRate: 115200 });
+
+    isConnected = true;
+    setConnStatus('Waiting for board…');
+
+    // Start read loop
+    readLoop();
+
+    // Wait briefly then start calibration
+    setTimeout(() => {
+      calIdx = 0;
+      showGetReady(0);
+    }, 2000);
+
+  } catch (err) {
+    showScreen('screen-welcome');
+    if (err.name !== 'NotFoundError') {
+      showError('Connection failed: ' + err.message);
+    }
+  }
+}
+
+async function disconnectDevice() {
+  isConnected = false;
+  if (sessionTimer) clearInterval(sessionTimer);
+  if (calTimer)     clearInterval(calTimer);
+  try {
+    if (reader) { await reader.cancel(); reader = null; }
+    if (port)   { await port.close();   port   = null; }
+  } catch (e) {}
+  showScreen('screen-welcome');
+}
+
+// ═══════════════════════════════════════════════════════
+// SERIAL READ LOOP
+// ═══════════════════════════════════════════════════════
+async function readLoop() {
+  const decoder = new TextDecoder();
+  reader = port.readable.getReader();
+
+  try {
+    while (isConnected) {
+      const { value, done } = await reader.read();
+      if (done) break;
+
+      lineBuffer += decoder.decode(value);
+      const lines  = lineBuffer.split('\n');
+      lineBuffer   = lines.pop();   // keep incomplete line
+
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.includes('"status"')) continue;
+        try {
+          const data = JSON.parse(trimmed);
+          if ('m1' in data) handleReading(data);
+        } catch (e) {}
+      }
+    }
+  } catch (e) {
+    if (isConnected) showError('Serial connection lost.');
+  } finally {
+    reader = null;
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// HANDLE INCOMING READING
+// ═══════════════════════════════════════════════════════
+function handleReading(data) {
+  const m1 = data.m1;
+  const m2 = data.m2;
+  latestM1 = m1;
+  latestM2 = m2;
+
+  // Update mic bars during calibration
+  updateMicBars(m1, m2);
+
+  // Collect calibration data
+  if (currentCalId) {
+    calData[currentCalId].push({ m1, m2, t: Date.now() });
+  }
+
+  // Live display updates (only on live screen)
+  const liveScreen = document.getElementById('screen-live');
+  if (liveScreen.classList.contains('active')) {
+    updateLiveDisplay(m1, m2);
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// CALIBRATION FLOW
+// ═══════════════════════════════════════════════════════
+function showGetReady(idx) {
+  const s = SCENARIOS[idx];
+  calIdx  = idx;
+
+  // Progress bar
+  const pct = (idx / SCENARIOS.length) * 100;
+  document.getElementById('cal-prog-fill').style.width  = pct + '%';
+  document.getElementById('cal-prog-fill2').style.width = pct + '%';
+
+  document.getElementById('ready-badge').textContent =
+    `Scenario ${idx + 1} of ${SCENARIOS.length}`;
+  document.getElementById('ready-icon').textContent   = s.icon;
+  document.getElementById('ready-icon').style.color   = s.color;
+  document.getElementById('ready-name').textContent   = s.name;
+  document.getElementById('ready-desc').textContent   = s.desc;
+
+  const btn = document.getElementById('btn-ready');
+  btn.style.background = s.color.includes('var') ? '' : s.color;
+  btn.disabled = false;
+  btn.textContent = 'I\'m Ready — Start';
+
+  showScreen('screen-ready');
+}
+
+function participantReady() {
+  const s   = SCENARIOS[calIdx];
+  const btn = document.getElementById('btn-ready');
+  btn.disabled    = true;
+  btn.textContent = 'Recording…';
+
+  // Setup countdown screen
+  document.getElementById('cd-name').textContent = s.name;
+  document.getElementById('cd-desc').textContent = s.desc;
+  document.getElementById('circle-fill').style.stroke = s.color;
+  document.getElementById('circle-num').style.color   = s.color;
+
+  const ring = document.getElementById('breath-ring');
+  ring.style.borderColor = s.color;
+  ring.classList.add('active');
+
+  showScreen('screen-countdown');
+  currentCalId = s.id;
+  runCountdown(s.duration, calIdx);
+}
+
+function runCountdown(totalSec, idx) {
+  const CIRC = 659;
+  let remaining = totalSec;
+
+  updateCircle(remaining, totalSec, CIRC);
+
+  clearInterval(calTimer);
+  calTimer = setInterval(() => {
+    remaining--;
+    updateCircle(remaining, totalSec, CIRC);
+
+    if (remaining <= 0) {
+      clearInterval(calTimer);
+      currentCalId = null;
+      document.getElementById('breath-ring').classList.remove('active');
+
+      const nextIdx = idx + 1;
+      if (nextIdx < SCENARIOS.length) {
+        showRest(nextIdx);
+      } else {
+        // All done — calculate thresholds
+        document.getElementById('rest-sub').textContent = 'Calculating your profile…';
+        document.getElementById('rest-count').textContent = '…';
+        showScreen('screen-rest');
+        setTimeout(() => {
+          calculateThresholds();
+          startLiveSession();
+        }, 1500);
+      }
+    }
+  }, 1000);
+}
+
+function updateCircle(remaining, total, circ) {
+  const offset = circ * (1 - remaining / total);
+  document.getElementById('circle-fill').style.strokeDashoffset = offset;
+  document.getElementById('circle-num').textContent = remaining;
+}
+
+function showRest(nextIdx) {
+  showScreen('screen-rest');
+  document.getElementById('rest-sub').textContent =
+    'Short break before the next scenario.';
+  let sec = 5;
+  document.getElementById('rest-count').textContent = sec;
+
+  const t = setInterval(() => {
+    sec--;
+    document.getElementById('rest-count').textContent = sec;
+    if (sec <= 0) { clearInterval(t); showGetReady(nextIdx); }
+  }, 1000);
+}
+
+// ═══════════════════════════════════════════════════════
+// THRESHOLD CALCULATION
+// ═══════════════════════════════════════════════════════
+function calcStats(values) {
+  if (!values.length) return { mean: 60, std: 10 };
+  const mean = values.reduce((a, b) => a + b, 0) / values.length;
+  const std  = Math.sqrt(
+    values.reduce((a, b) => a + (b - mean) ** 2, 0) / values.length
+  );
+  return { mean, std };
+}
+
+function calculateThresholds() {
+  const base = calData['baseline'] || [];
+  const m1base = base.map(r => r.m1);
+  const m2base = base.map(r => r.m2);
+
+  const s1 = calcStats(m1base);
+  const s2 = calcStats(m2base);
+
+  thresholds.mic1 = Math.round(s1.mean + 2 * s1.std);
+  thresholds.mic2 = Math.round(s2.mean + 2 * s2.std);
+
+  console.log(`Thresholds calculated — MIC1: ${thresholds.mic1}, MIC2: ${thresholds.mic2}`);
+}
+
+// ═══════════════════════════════════════════════════════
+// LIVE SESSION
+// ═══════════════════════════════════════════════════════
+function startLiveSession() {
+  sessionStart = Date.now();
+  breathCount  = 0;
+  breathEvents = [];
+  lastBreathSide = 'none';
+
+  // Setup canvases
+  const c1 = document.getElementById('wave1');
+  const c2 = document.getElementById('wave2');
+  ctx1 = c1.getContext('2d');
+  ctx2 = c2.getContext('2d');
+  c1.width  = c1.offsetWidth * devicePixelRatio;
+  c1.height = 100 * devicePixelRatio;
+  c2.width  = c2.offsetWidth * devicePixelRatio;
+  c2.height = 100 * devicePixelRatio;
+
+  showScreen('screen-live');
+
+  // Session timer
+  sessionTimer = setInterval(() => {
+    const elapsed = Math.floor((Date.now() - sessionStart) / 1000);
+    const m = Math.floor(elapsed / 60);
+    const s = elapsed % 60;
+    document.getElementById('session-timer').textContent =
+      `${m}:${s.toString().padStart(2, '0')}`;
+  }, 1000);
+
+  // Waveform render loop
+  requestAnimationFrame(renderWaves);
+}
+
+// ═══════════════════════════════════════════════════════
+// LIVE DISPLAY UPDATE (called on every reading)
+// ═══════════════════════════════════════════════════════
+function updateLiveDisplay(m1, m2) {
+  // Push to waveform buffers
+  waveData1.push(m1);
+  waveData2.push(m2);
+  if (waveData1.length > 200) { waveData1.shift(); waveData2.shift(); }
+
+  // Update raw stat cards
+  document.getElementById('stat-m1').textContent = m1;
+  document.getElementById('stat-m2').textContent = m2;
+
+  // Detect breath side using calibrated thresholds
+  const b1 = m1 >= thresholds.mic1;
+  const b2 = m2 >= thresholds.mic2;
+  let side = 'none';
+  if (b1 && b2)  side = 'both';
+  else if (b1)   side = 'left';
+  else if (b2)   side = 'right';
+
+  // Count breaths on state change
+  if (side !== 'none' && lastBreathSide === 'none') {
+    breathCount++;
+    breathEvents.push(Date.now());
+    document.getElementById('stat-total').textContent = breathCount;
+
+    // Remove events older than 60s for rate calc
+    const cutoff = Date.now() - 60000;
+    breathEvents = breathEvents.filter(t => t > cutoff);
+    const rate   = breathEvents.length;
+    document.getElementById('stat-rate').textContent = rate || '–';
+  }
+  lastBreathSide = side;
+
+  // Update nostril pills
+  const pills = ['pill-left', 'pill-both', 'pill-right'];
+  pills.forEach(id => document.getElementById(id).className = 'nostril-pill');
+
+  if (side === 'left')  document.getElementById('pill-left').classList.add('active-left');
+  if (side === 'right') document.getElementById('pill-right').classList.add('active-right');
+  if (side === 'both') {
+    document.getElementById('pill-left').classList.add('active-both');
+    document.getElementById('pill-both').classList.add('active-both');
+    document.getElementById('pill-right').classList.add('active-both');
+  }
+
+  // Intensity indicator
+  const peak      = Math.max(m1, m2);
+  const intensity = side !== 'none'
+    ? Math.min(((peak - Math.min(thresholds.mic1, thresholds.mic2)) /
+        Math.min(thresholds.mic1, thresholds.mic2) * 100), 100).toFixed(0)
+    : 0;
+  document.getElementById('nostril-intensity').textContent =
+    side !== 'none' ? `${intensity}% intensity` : '–';
+}
+
+// ═══════════════════════════════════════════════════════
+// WAVEFORM RENDERER
+// ═══════════════════════════════════════════════════════
+function renderWaves() {
+  if (!ctx1 || !ctx2) return;
+  drawWave(ctx1, waveData1, '#52d9a0', thresholds.mic1);
+  drawWave(ctx2, waveData2, '#c084fc', thresholds.mic2);
+  requestAnimationFrame(renderWaves);
+}
+
+function drawWave(ctx, data, color, threshold) {
+  const W = ctx.canvas.width;
+  const H = ctx.canvas.height;
+  const MAX_VAL = 400;
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Threshold line
+  const thY = H - (threshold / MAX_VAL) * H;
+  ctx.beginPath();
+  ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+  ctx.lineWidth   = 1;
+  ctx.setLineDash([4, 6]);
+  ctx.moveTo(0, thY);
+  ctx.lineTo(W, thY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Fill under wave
+  const gradient = ctx.createLinearGradient(0, 0, 0, H);
+  gradient.addColorStop(0, color + '40');
+  gradient.addColorStop(1, color + '00');
+
+  ctx.beginPath();
+  data.forEach((v, i) => {
+    const x = (i / (data.length - 1)) * W;
+    const y = H - Math.min(v / MAX_VAL, 1) * H;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.lineTo(W, H);
+  ctx.lineTo(0, H);
+  ctx.closePath();
+  ctx.fillStyle = gradient;
+  ctx.fill();
+
+  // Wave line
+  ctx.beginPath();
+  data.forEach((v, i) => {
+    const x = (i / (data.length - 1)) * W;
+    const y = H - Math.min(v / MAX_VAL, 1) * H;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.strokeStyle = color;
+  ctx.lineWidth   = 1.5 * devicePixelRatio;
+  ctx.stroke();
+}
+
+// ═══════════════════════════════════════════════════════
+// MIC BARS (calibration screen)
+// ═══════════════════════════════════════════════════════
+function updateMicBars(m1, m2) {
+  const MAX = 300;
+  document.getElementById('mic1-bar').style.height =
+    Math.min((m1 / MAX) * 100, 100) + '%';
+  document.getElementById('mic2-bar').style.height =
+    Math.min((m2 / MAX) * 100, 100) + '%';
+}
+
+// ═══════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════
+function setConnStatus(msg) {
+  document.getElementById('conn-status-text').textContent = msg;
+}
+
+function showError(msg) {
+  const b = document.getElementById('error-banner');
+  b.textContent = msg;
+  b.classList.add('show');
+  setTimeout(() => b.classList.remove('show'), 4000);
+}
+
+// ── SPACEBAR shortcut ──────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.code !== 'Space' || e.target.tagName === 'INPUT') return;
+  const ready = document.getElementById('screen-ready');
+  const btn   = document.getElementById('btn-ready');
+  if (ready.classList.contains('active') && !btn.disabled) {
+    e.preventDefault();
+    btn.click();
+  }
+});
+</script>
+</body>
+</html>
