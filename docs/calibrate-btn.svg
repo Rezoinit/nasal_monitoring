@@ -1,20 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 72" width="280" height="72">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 72" width="360" height="72">
   <!-- Oval-rect shape -->
-  <rect width="280" height="72" rx="20" fill="#1D6BF3"/>
+  <rect width="360" height="72" rx="20" fill="#1D6BF3"/>
   <!-- Subtle inner highlight for depth -->
-  <rect x="1" y="1" width="278" height="35" rx="19" fill="white" opacity="0.06"/>
+  <rect x="1" y="1" width="358" height="35" rx="19" fill="white" opacity="0.06"/>
   <!-- Gear symbol — large -->
   <text
-    x="38"
+    x="44"
     y="50"
     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
     font-size="38"
     fill="white"
     text-anchor="middle"
   >⚙</text>
-  <!-- Calibrate label -->
+  <!-- Calibration Profile label -->
   <text
-    x="162"
+    x="202"
     y="46"
     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
     font-size="22"
@@ -22,5 +22,5 @@
     fill="white"
     text-anchor="middle"
     letter-spacing="0.8"
-  >Calibrate</text>
+  >Calibration Profile</text>
 </svg>
