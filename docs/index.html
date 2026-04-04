@@ -8,172 +8,257 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#070b10;--surface:#0e1520;--surface2:#141d2b;--border:#1c2a3a;
-  --text:#dde6f0;--muted:#4a6278;--accent:#5eb8ff;--left:#52d9a0;
-  --right:#c084fc;--both:#fbbf24;--danger:#f87171;--success:#4ade80;
+  --bg:#070b10;--surface:#0e1520;--s2:#141d2b;--border:#1c2a3a;
+  --text:#dde6f0;--muted:#4a6278;--accent:#5eb8ff;
+  --left:#52d9a0;--right:#c084fc;--both:#fbbf24;
+  --danger:#f87171;--success:#4ade80;--warn:#fb923c;
   --mono:'DM Mono',monospace;--body:'Outfit',sans-serif;--display:'Fraunces',serif;
 }
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--body);overflow:hidden}
-body::before{content:'';position:fixed;inset:0;
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   background:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(94,184,255,.04) 0%,transparent 60%),
-             radial-gradient(ellipse 60% 40% at 80% 90%,rgba(192,132,252,.04) 0%,transparent 60%);
-  pointer-events:none;z-index:0}
-body::after{content:'';position:fixed;inset:0;
+             radial-gradient(ellipse 60% 40% at 80% 90%,rgba(192,132,252,.04) 0%,transparent 60%)}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   background-image:linear-gradient(rgba(94,184,255,.015) 1px,transparent 1px),
-                   linear-gradient(90deg,rgba(94,184,255,.015) 1px,transparent 1px);
-  background-size:56px 56px;pointer-events:none;z-index:0}
+    linear-gradient(90deg,rgba(94,184,255,.015) 1px,transparent 1px);background-size:56px 56px}
+
+/* SCREENS */
 .screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;padding:32px 24px;z-index:1;opacity:0;pointer-events:none;
+  justify-content:center;padding:28px 24px;z-index:1;opacity:0;pointer-events:none;
   transition:opacity .4s ease;overflow-y:auto}
 .screen.active{opacity:1;pointer-events:all}
+
+/* TYPE */
 .wordmark{font-family:var(--mono);font-size:11px;letter-spacing:5px;color:var(--muted);
-  text-transform:uppercase;margin-bottom:48px}
-.headline{font-family:var(--display);font-size:clamp(38px,5vw,64px);font-weight:300;
-  line-height:1.1;letter-spacing:-2px;text-align:center;margin-bottom:18px}
+  text-transform:uppercase;margin-bottom:44px}
+.headline{font-family:var(--display);font-size:clamp(36px,5vw,62px);font-weight:300;
+  line-height:1.1;letter-spacing:-2px;text-align:center;margin-bottom:16px}
 .headline em{font-style:italic;color:var(--accent)}
-.sub{font-size:15px;color:var(--muted);line-height:1.7;text-align:center;max-width:400px;margin-bottom:48px}
-.btn{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#070b10;
-  border:none;border-radius:100px;padding:16px 40px;font-size:16px;font-weight:600;
+.sub{font-size:15px;color:var(--muted);line-height:1.7;text-align:center;
+  max-width:400px;margin-bottom:44px}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:9px;background:var(--accent);color:#070b10;
+  border:none;border-radius:100px;padding:15px 38px;font-size:15px;font-weight:600;
   font-family:var(--body);cursor:pointer;letter-spacing:.2px;
   transition:opacity .2s,transform .15s,box-shadow .2s}
-.btn:hover{opacity:.92;transform:translateY(-2px);box-shadow:0 8px 32px rgba(94,184,255,.2)}
+.btn:hover{opacity:.9;transform:translateY(-2px);box-shadow:0 8px 28px rgba(94,184,255,.2)}
 .btn:active{transform:translateY(0)}
 .btn:disabled{opacity:.3;cursor:not-allowed;transform:none;box-shadow:none}
 .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border);box-shadow:none}
 .btn-ghost:hover{border-color:var(--text);color:var(--text);box-shadow:none}
-.btn-sm{padding:10px 24px;font-size:13px}
+.btn-sm{padding:9px 22px;font-size:13px}
 .btn-connect{animation:cpulse 2.5s ease-in-out infinite}
-@keyframes cpulse{0%,100%{box-shadow:0 0 0 0 rgba(94,184,255,.5)}50%{box-shadow:0 0 0 20px rgba(94,184,255,0)}}
-.chrome-notice{display:flex;align-items:center;gap:10px;margin-top:24px;
+@keyframes cpulse{0%,100%{box-shadow:0 0 0 0 rgba(94,184,255,.5)}50%{box-shadow:0 0 0 18px rgba(94,184,255,0)}}
+
+.chrome-notice{display:flex;align-items:center;gap:10px;margin-top:22px;
   background:var(--surface);border:1px solid var(--border);border-radius:100px;
-  padding:10px 20px;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:1px}
+  padding:9px 18px;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:1px}
 .chrome-dot{width:8px;height:8px;border-radius:50%;background:#34a853;box-shadow:0 0 6px #34a853}
-.spinner{width:52px;height:52px;border:2px solid var(--border);border-top-color:var(--accent);
-  border-radius:50%;animation:spin 1s linear infinite;margin-bottom:28px}
+
+/* CONNECTING */
+.spinner{width:48px;height:48px;border:2px solid var(--border);border-top-color:var(--accent);
+  border-radius:50%;animation:spin 1s linear infinite;margin-bottom:24px}
 @keyframes spin{to{transform:rotate(360deg)}}
-.picker-title{font-family:var(--display);font-size:34px;font-weight:300;letter-spacing:-1px;
-  margin-bottom:8px;text-align:center}
-.picker-sub{font-size:14px;color:var(--muted);margin-bottom:32px;text-align:center;max-width:480px}
-.scenario-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;
-  width:100%;max-width:720px;margin-bottom:32px}
-.s-card{background:var(--surface);border:2px solid var(--border);border-radius:20px;
-  padding:22px 18px;text-align:center;cursor:pointer;
-  transition:border-color .25s,background .25s,transform .15s;user-select:none;position:relative}
+
+/* ═══ PICKER ═══════════════════════════════════════════ */
+.picker-header{text-align:center;margin-bottom:28px}
+.picker-title{font-family:var(--display);font-size:32px;font-weight:300;
+  letter-spacing:-1px;margin-bottom:6px}
+.picker-sub{font-size:13px;color:var(--muted);line-height:1.6;max-width:560px;margin:0 auto}
+
+/* Accuracy meter */
+.accuracy-bar{width:100%;max-width:800px;margin-bottom:24px;
+  background:var(--surface);border:1px solid var(--border);border-radius:16px;
+  padding:14px 20px;display:flex;align-items:center;gap:16px}
+.acc-label{font-family:var(--mono);font-size:10px;letter-spacing:2px;
+  color:var(--muted);text-transform:uppercase;white-space:nowrap}
+.acc-track{flex:1;height:6px;background:var(--border);border-radius:10px;overflow:hidden}
+.acc-fill{height:100%;border-radius:10px;background:var(--accent);
+  transition:width .5s ease,background .5s ease}
+.acc-level{font-family:var(--mono);font-size:13px;font-weight:500;
+  white-space:nowrap;transition:color .3s;min-width:120px;text-align:right}
+
+/* Scenario grid */
+.s-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+  width:100%;max-width:800px;margin-bottom:20px}
+.s-card{background:var(--surface);border:2px solid var(--border);border-radius:16px;
+  padding:16px 14px 14px;cursor:pointer;
+  transition:border-color .25s,background .25s,transform .15s;
+  position:relative;user-select:none}
 .s-card:hover{transform:translateY(-2px);border-color:var(--muted)}
-.s-card.selected{border-color:var(--accent);background:rgba(94,184,255,.06)}
-.check{position:absolute;top:14px;right:14px;width:22px;height:22px;
-  border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;
-  justify-content:center;font-size:11px;transition:all .2s}
-.s-card.selected .check{background:var(--accent);border-color:var(--accent);color:#070b10}
-.s-icon{font-size:34px;margin-bottom:10px;display:block}
-.s-name{font-size:15px;font-weight:600;margin-bottom:5px}
-.s-dur{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:1px}
-.s-short{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5}
-.picker-actions{display:flex;gap:16px;align-items:center}
+.s-card.sel{border-color:var(--accent);background:rgba(94,184,255,.06)}
+.s-card.live-card{border-style:dashed;border-color:var(--muted)}
+.s-card.live-card:hover{border-color:var(--accent)}
+.s-check{position:absolute;top:12px;right:12px;width:20px;height:20px;
+  border-radius:50%;border:2px solid var(--border);display:flex;
+  align-items:center;justify-content:center;font-size:10px;transition:all .2s}
+.s-card.sel .s-check{background:var(--accent);border-color:var(--accent);color:#070b10}
+.s-icon{font-size:28px;margin-bottom:8px;display:block}
+.s-name{font-size:14px;font-weight:600;margin-bottom:4px}
+.s-dur{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:6px}
+.s-unlock{font-size:11px;color:var(--muted);line-height:1.4;border-top:1px solid var(--border);
+  padding-top:6px;margin-top:4px}
+.unlock-dot{display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:var(--accent);margin-right:4px;vertical-align:middle}
+
+.picker-actions{display:flex;align-items:center;gap:16px}
 .sel-count{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:1px}
-.cal-bar{width:100%;max-width:540px;height:2px;background:var(--border);
-  border-radius:10px;margin-bottom:44px;overflow:hidden}
-.cal-bar-fill{height:100%;background:var(--accent);border-radius:10px;transition:width .6s ease}
+
+/* ═══ CAL SCREENS ══════════════════════════════════════ */
+.cal-bar{width:100%;max-width:520px;height:2px;background:var(--border);
+  border-radius:10px;margin-bottom:40px;overflow:hidden}
+.cal-fill{height:100%;background:var(--accent);border-radius:10px;transition:width .6s ease}
 .s-badge{font-family:var(--mono);font-size:11px;letter-spacing:4px;color:var(--muted);
-  text-transform:uppercase;margin-bottom:16px}
-.s-big-icon{font-size:60px;margin-bottom:18px;display:block}
-.s-big-name{font-family:var(--display);font-size:36px;font-weight:300;letter-spacing:-1px;
-  margin-bottom:12px;text-align:center}
-.s-instruction{font-size:15px;color:var(--muted);line-height:1.8;text-align:center;
-  max-width:420px;white-space:pre-line;margin-bottom:40px}
-.space-hint{margin-top:14px;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:1px}
-kbd{background:var(--surface2);border:1px solid var(--border);border-radius:5px;
+  text-transform:uppercase;margin-bottom:14px}
+.big-icon{font-size:56px;margin-bottom:16px;display:block}
+.big-name{font-family:var(--display);font-size:34px;font-weight:300;
+  letter-spacing:-1px;margin-bottom:12px;text-align:center}
+.s-instr{font-size:14px;color:var(--muted);line-height:1.8;text-align:center;
+  max-width:400px;white-space:pre-line;margin-bottom:36px}
+.space-hint{margin-top:14px;font-family:var(--mono);font-size:11px;
+  color:var(--muted);letter-spacing:1px}
+kbd{background:var(--s2);border:1px solid var(--border);border-radius:5px;
   padding:2px 8px;font-family:var(--mono);font-size:11px;color:var(--text)}
-.circle-wrap{position:relative;width:210px;height:210px;margin-bottom:28px}
-.c-svg{width:210px;height:210px;transform:rotate(-90deg)}
+
+/* Circle timer */
+.circle-wrap{position:relative;width:200px;height:200px;margin-bottom:24px}
+.c-svg{width:200px;height:200px;transform:rotate(-90deg)}
 .c-track{fill:none;stroke:var(--border);stroke-width:3}
-.c-fill{fill:none;stroke-width:3;stroke-linecap:round;stroke-dasharray:565;
-  stroke-dashoffset:565;transition:stroke-dashoffset 1s linear,stroke .5s}
+.c-fill{fill:none;stroke-width:3;stroke-linecap:round;stroke-dasharray:534;
+  stroke-dashoffset:534;transition:stroke-dashoffset 1s linear,stroke .5s}
 .c-inner{position:absolute;inset:0;display:flex;flex-direction:column;
   align-items:center;justify-content:center}
-.c-num{font-family:var(--mono);font-size:54px;font-weight:300;line-height:1;transition:color .5s}
-.c-label{font-family:var(--mono);font-size:10px;letter-spacing:3px;color:var(--muted);
+.c-num{font-family:var(--mono);font-size:52px;font-weight:300;line-height:1;transition:color .5s}
+.c-lbl{font-family:var(--mono);font-size:10px;letter-spacing:3px;color:var(--muted);
   text-transform:uppercase;margin-top:4px}
-.breath-ring{position:absolute;inset:20px;border-radius:50%;border:1.5px solid transparent;pointer-events:none}
-.breath-ring.active{animation:bpulse 4s ease-in-out infinite}
+.breath-ring{position:absolute;inset:18px;border-radius:50%;border:1.5px solid transparent;pointer-events:none}
+.breath-ring.on{animation:bpulse 4s ease-in-out infinite}
 @keyframes bpulse{0%,100%{transform:scale(.9);opacity:.2}50%{transform:scale(1.1);opacity:.7}}
-.mic-bars{display:flex;gap:16px;margin-top:24px}
-.mb-item{display:flex;flex-direction:column;align-items:center;gap:7px}
-.mb-track{width:5px;height:56px;background:var(--border);border-radius:10px;position:relative;overflow:hidden}
+
+.mic-bars{display:flex;gap:14px;margin-top:20px}
+.mb-item{display:flex;flex-direction:column;align-items:center;gap:6px}
+.mb-track{width:5px;height:52px;background:var(--border);border-radius:10px;
+  position:relative;overflow:hidden}
 .mb-fill{position:absolute;bottom:0;left:0;right:0;border-radius:10px;transition:height .1s}
 .mb-tag{font-family:var(--mono);font-size:9px;letter-spacing:1px;color:var(--muted)}
-.rest-check{font-size:52px;margin-bottom:18px}
-.rest-title{font-family:var(--display);font-size:36px;font-weight:300;margin-bottom:10px}
-.rest-sub{font-size:14px;color:var(--muted);margin-bottom:32px}
-.rest-count{font-family:var(--mono);font-size:64px;color:var(--accent)}
-.sum-title{font-family:var(--display);font-size:36px;font-weight:300;letter-spacing:-1px;
-  margin-bottom:8px;text-align:center}
-.sum-sub{font-size:14px;color:var(--muted);margin-bottom:36px;text-align:center}
-.sum-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;width:100%;max-width:600px;margin-bottom:24px}
-.sum-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px}
-.sum-label{font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--muted);
-  text-transform:uppercase;margin-bottom:8px}
-.sum-value{font-family:var(--mono);font-size:26px;font-weight:400;margin-bottom:4px}
-.sum-note{font-size:12px;color:var(--muted)}
-.sum-box{width:100%;max-width:600px;background:var(--surface);border:1px solid var(--border);
-  border-radius:16px;padding:20px;margin-bottom:28px}
-.sum-box-title{font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--muted);
-  text-transform:uppercase;margin-bottom:14px}
-.sum-row{display:flex;justify-content:space-between;padding:9px 0;
-  border-bottom:1px solid var(--border);font-size:13px}
-.sum-row:last-child{border-bottom:none}
-.sum-row-key{color:var(--muted)}
-.sum-row-val{font-family:var(--mono);font-weight:500}
-.live-header{width:100%;max-width:960px;display:flex;align-items:center;
-  justify-content:space-between;margin-bottom:16px;flex-shrink:0}
-.live-title{font-family:var(--display);font-size:24px;font-weight:300;letter-spacing:-.5px}
-.session-badge{display:flex;align-items:center;gap:8px;background:var(--surface);
-  border:1px solid var(--border);border-radius:100px;padding:7px 14px;
+
+/* REST */
+.rest-check{font-size:48px;margin-bottom:16px}
+.rest-title{font-family:var(--display);font-size:34px;font-weight:300;margin-bottom:8px}
+.rest-sub{font-size:14px;color:var(--muted);margin-bottom:28px}
+.rest-count{font-family:var(--mono);font-size:60px;color:var(--accent)}
+
+/* ═══ SUMMARY ══════════════════════════════════════════ */
+.sum-title{font-family:var(--display);font-size:34px;font-weight:300;
+  letter-spacing:-1px;margin-bottom:6px;text-align:center}
+.sum-sub{font-size:13px;color:var(--muted);margin-bottom:28px;text-align:center}
+.sum-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;
+  width:100%;max-width:580px;margin-bottom:20px}
+.sum-card{background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;padding:18px}
+.sum-lbl{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--muted);
+  text-transform:uppercase;margin-bottom:7px}
+.sum-val{font-family:var(--mono);font-size:24px;font-weight:400;margin-bottom:3px}
+.sum-note{font-size:11px;color:var(--muted)}
+.cap-grid{display:flex;flex-wrap:wrap;gap:8px;width:100%;max-width:580px;
+  margin-bottom:24px}
+.cap-tag{display:flex;align-items:center;gap:6px;background:var(--surface);
+  border:1px solid var(--border);border-radius:100px;padding:6px 14px;
+  font-family:var(--mono);font-size:11px;color:var(--muted)}
+.cap-tag.active{border-color:var(--success);color:var(--success)}
+.cap-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+/* ═══ LIVE SCREEN ══════════════════════════════════════ */
+.live-wrap{width:100%;max-width:980px;display:flex;flex-direction:column;
+  gap:8px;padding-top:16px;flex-shrink:0}
+
+.live-header{display:flex;align-items:center;justify-content:space-between}
+.live-title{font-family:var(--display);font-size:22px;font-weight:300;letter-spacing:-.5px}
+.sess-right{display:flex;align-items:center;gap:10px}
+.session-badge{display:flex;align-items:center;gap:7px;background:var(--surface);
+  border:1px solid var(--border);border-radius:100px;padding:6px 14px;
   font-family:var(--mono);font-size:12px;color:var(--muted)}
-.rec-dot{width:7px;height:7px;border-radius:50%;background:var(--danger);
-  box-shadow:0 0 6px var(--danger);animation:blink 1.2s ease-in-out infinite}
+.rec-dot{width:6px;height:6px;border-radius:50%;background:var(--danger);
+  box-shadow:0 0 5px var(--danger);animation:blink 1.2s ease-in-out infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
-  width:100%;max-width:960px;margin-bottom:8px;flex-shrink:0}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px}
-.stat-label{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--muted);
+
+/* Profile bar */
+.profile-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 16px}
+.profile-lbl{font-family:var(--mono);font-size:9px;letter-spacing:2px;
+  color:var(--muted);text-transform:uppercase;margin-right:4px;white-space:nowrap}
+.feat-pill{display:inline-flex;align-items:center;gap:5px;border-radius:100px;
+  padding:4px 10px;font-family:var(--mono);font-size:10px;letter-spacing:.5px;
+  border:1px solid var(--border);color:var(--muted)}
+.feat-pill.on{border-color:rgba(74,222,128,.4);background:rgba(74,222,128,.08);color:var(--success)}
+.feat-pill.locked{opacity:.5}
+.feat-dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+
+/* Stats */
+.stats-row{display:grid;gap:8px}
+.stats-row.cols4{grid-template-columns:repeat(4,1fr)}
+.stats-row.cols3{grid-template-columns:repeat(3,1fr)}
+.stat-card{background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:12px 14px;position:relative;transition:border-color .3s}
+.stat-card.locked-card{opacity:.45}
+.stat-lbl{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--muted);
   text-transform:uppercase;margin-bottom:5px}
-.stat-value{font-family:var(--mono);font-size:22px;font-weight:400;line-height:1;transition:color .3s}
+.stat-val{font-family:var(--mono);font-size:20px;font-weight:400;
+  line-height:1;transition:color .3s}
 .stat-unit{font-size:9px;color:var(--muted);margin-top:3px;font-family:var(--mono)}
-.nostril-wrap{width:100%;max-width:960px;background:var(--surface);
-  border:1px solid var(--border);border-radius:12px;padding:12px 18px;
-  margin-bottom:8px;display:flex;align-items:center;gap:14px;flex-shrink:0}
-.nostril-label{font-family:var(--mono);font-size:9px;letter-spacing:2px;
+.lock-badge{position:absolute;top:8px;right:10px;font-size:10px;color:var(--muted)}
+
+/* Nostril */
+.nostril-wrap{display:flex;align-items:center;gap:12px;background:var(--surface);
+  border:1px solid var(--border);border-radius:12px;padding:10px 16px}
+.nostril-lbl{font-family:var(--mono);font-size:9px;letter-spacing:2px;
   color:var(--muted);text-transform:uppercase;white-space:nowrap}
-.nostril-pills{display:flex;gap:8px;flex:1}
-.n-pill{flex:1;padding:9px 10px;border-radius:100px;border:1px solid var(--border);
-  text-align:center;font-size:13px;font-weight:500;transition:all .25s;color:var(--muted)}
-.n-pill.active-left{background:rgba(82,217,160,.12);border-color:var(--left);color:var(--left)}
-.n-pill.active-right{background:rgba(192,132,252,.12);border-color:var(--right);color:var(--right)}
-.n-pill.active-both{background:rgba(251,191,36,.12);border-color:var(--both);color:var(--both)}
-.nostril-intensity{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap}
-.waveform-wrap{width:100%;max-width:960px;background:var(--surface);
-  border:1px solid var(--border);border-radius:12px;padding:14px 18px;flex-shrink:0}
-.wave-labels{display:flex;justify-content:space-between;margin-bottom:6px}
-.wave-label{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase}
-canvas{width:100%;height:70px;display:block;border-radius:6px}
-canvas+canvas{margin-top:8px}
-.live-bottom{width:100%;max-width:960px;display:flex;justify-content:space-between;
-  align-items:center;margin-top:8px;flex-shrink:0}
-.export-btn{display:flex;align-items:center;gap:8px;background:var(--surface);
-  border:1px solid var(--border);border-radius:100px;padding:9px 18px;
+.n-pills{display:flex;gap:7px;flex:1}
+.n-pill{flex:1;padding:8px 8px;border-radius:100px;border:1px solid var(--border);
+  text-align:center;font-size:12px;font-weight:500;transition:all .25s;color:var(--muted)}
+.n-pill.al{background:rgba(82,217,160,.12);border-color:var(--left);color:var(--left)}
+.n-pill.ar{background:rgba(192,132,252,.12);border-color:var(--right);color:var(--right)}
+.n-pill.ab{background:rgba(251,191,36,.12);border-color:var(--both);color:var(--both)}
+.n-intens{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap}
+
+/* Artefact banner */
+.artefact-banner{display:none;align-items:center;gap:10px;background:rgba(251,146,60,.08);
+  border:1px solid rgba(251,146,60,.4);border-radius:12px;padding:10px 16px;
+  font-size:13px;color:var(--warn)}
+.artefact-banner.show{display:flex}
+
+/* Waveform */
+.wave-wrap{background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:12px 16px}
+.wave-lbl-row{display:flex;justify-content:space-between;margin-bottom:5px}
+.wave-lbl{font-family:var(--mono);font-size:9px;letter-spacing:2px;
+  color:var(--muted);text-transform:uppercase}
+canvas{width:100%;height:62px;display:block;border-radius:5px}
+canvas+canvas{margin-top:7px}
+
+/* Bottom */
+.live-bottom{display:flex;justify-content:space-between;align-items:center}
+.thr-info{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:1px}
+.bottom-right{display:flex;gap:8px}
+.icon-btn{display:flex;align-items:center;gap:7px;background:var(--surface);
+  border:1px solid var(--border);border-radius:100px;padding:8px 16px;
   font-family:var(--mono);font-size:11px;color:var(--muted);cursor:pointer;
   letter-spacing:1px;transition:border-color .2s,color .2s}
-.export-btn:hover{border-color:var(--success);color:var(--success)}
-.disconnect-btn{position:fixed;top:18px;right:18px;background:var(--surface);
+.icon-btn:hover{border-color:var(--success);color:var(--success)}
+.icon-btn.recal:hover{border-color:var(--accent);color:var(--accent)}
+
+/* Disconnect */
+.disconnect-btn{position:fixed;top:16px;right:16px;background:var(--surface);
   border:1px solid var(--border);border-radius:100px;padding:7px 14px;
   font-family:var(--mono);font-size:11px;color:var(--muted);cursor:pointer;
   letter-spacing:1px;transition:border-color .2s,color .2s;z-index:10;display:none}
 .disconnect-btn:hover{border-color:var(--danger);color:var(--danger)}
 .disconnect-btn.vis{display:block}
-.error-banner{position:fixed;bottom:28px;left:50%;
+
+.error-banner{position:fixed;bottom:24px;left:50%;
   transform:translateX(-50%) translateY(80px);background:var(--surface);
-  border:1px solid var(--danger);border-radius:100px;padding:10px 24px;
+  border:1px solid var(--danger);border-radius:100px;padding:9px 22px;
   font-size:13px;color:var(--danger);font-family:var(--mono);
   transition:transform .3s ease;z-index:100;white-space:nowrap}
 .error-banner.show{transform:translateX(-50%) translateY(0)}
@@ -185,7 +270,7 @@ canvas+canvas{margin-top:8px}
 <div class="screen active" id="screen-welcome">
   <div class="wordmark">Nasal Monitor · Research Tool</div>
   <h1 class="headline">Breathe.<br>We'll <em>listen.</em></h1>
-  <p class="sub">Plug in your sensor, pick your scenarios, and explore your nasal breathing in real time.</p>
+  <p class="sub">Plug in your sensor, choose your scenarios, and explore your nasal breathing in real time.</p>
   <button class="btn btn-connect" onclick="connectDevice()"><span>⬡</span> Connect Device</button>
   <div class="chrome-notice"><div class="chrome-dot"></div>Requires Google Chrome · Web Serial API</div>
 </div>
@@ -193,55 +278,68 @@ canvas+canvas{margin-top:8px}
 <!-- CONNECTING -->
 <div class="screen" id="screen-connecting">
   <div class="spinner"></div>
-  <p style="font-size:22px;font-weight:300;margin-bottom:10px">Connecting…</p>
+  <p style="font-size:22px;font-weight:300;margin-bottom:8px">Connecting…</p>
   <p style="font-family:var(--mono);font-size:12px;color:var(--muted)" id="conn-text">Opening serial port</p>
 </div>
 
 <!-- SCENARIO PICKER -->
-<div class="screen" id="screen-picker">
-  <h2 class="picker-title">Choose Your Scenarios</h2>
-  <p class="picker-sub">Select any combination — or skip straight to live monitoring. You can finish early at any point during calibration.</p>
-  <div class="scenario-grid" id="picker-grid"></div>
+<div class="screen" id="screen-picker" style="justify-content:flex-start;padding-top:32px">
+  <div class="picker-header">
+    <div class="picker-title">Choose Your Scenarios</div>
+    <div class="picker-sub">
+      Select any combination. More scenarios → richer live analysis and higher confidence.
+      You can finish early at any point during calibration.
+    </div>
+  </div>
+
+  <!-- Accuracy meter -->
+  <div class="accuracy-bar">
+    <span class="acc-label">Analysis Depth</span>
+    <div class="acc-track"><div class="acc-fill" id="acc-fill" style="width:0%"></div></div>
+    <span class="acc-level" id="acc-level" style="color:var(--muted)">Basic</span>
+  </div>
+
+  <div class="s-grid" id="picker-grid"></div>
+
   <div class="picker-actions">
-    <button class="btn btn-ghost btn-sm" onclick="skipCalibration()">Skip → Live only</button>
-    <span class="sel-count" id="sel-count">3 selected</span>
-    <button class="btn btn-sm" id="btn-begin" onclick="beginCalibration()">Begin →</button>
+    <span class="sel-count" id="sel-count">0 selected</span>
+    <button class="btn btn-sm" id="btn-begin" onclick="beginCalibration()" disabled>Begin →</button>
   </div>
 </div>
 
 <!-- GET READY -->
 <div class="screen" id="screen-ready">
-  <div class="cal-bar"><div class="cal-bar-fill" id="cal-fill" style="width:0%"></div></div>
+  <div class="cal-bar"><div class="cal-fill" id="cal-fill" style="width:0%"></div></div>
   <div class="s-badge" id="ready-badge">–</div>
-  <span class="s-big-icon" id="ready-icon">◎</span>
-  <h2 class="s-big-name" id="ready-name">–</h2>
-  <p class="s-instruction" id="ready-desc">–</p>
+  <span class="big-icon" id="ready-icon">◎</span>
+  <h2 class="big-name" id="ready-name">–</h2>
+  <p class="s-instr" id="ready-desc">–</p>
   <button class="btn" id="btn-ready" onclick="participantReady()" style="border-radius:100px">I'm Ready — Start</button>
   <div class="space-hint">press <kbd>space</kbd> or click to begin</div>
-  <button class="btn btn-ghost btn-sm" style="margin-top:20px" onclick="skipToSummary()">Finish Early → See Results</button>
+  <button class="btn btn-ghost btn-sm" style="margin-top:18px" onclick="skipToSummary()">Finish Early → See Results</button>
 </div>
 
 <!-- COUNTDOWN -->
 <div class="screen" id="screen-countdown">
-  <div class="cal-bar"><div class="cal-bar-fill" id="cal-fill2" style="width:0%"></div></div>
+  <div class="cal-bar"><div class="cal-fill" id="cal-fill2" style="width:0%"></div></div>
   <div class="circle-wrap">
-    <svg class="c-svg" viewBox="0 0 210 210">
-      <circle class="c-track" cx="105" cy="105" r="90"/>
-      <circle class="c-fill" id="c-fill" cx="105" cy="105" r="90"/>
+    <svg class="c-svg" viewBox="0 0 200 200">
+      <circle class="c-track" cx="100" cy="100" r="85"/>
+      <circle class="c-fill" id="c-fill" cx="100" cy="100" r="85"/>
     </svg>
     <div class="breath-ring" id="breath-ring"></div>
     <div class="c-inner">
       <div class="c-num" id="c-num">–</div>
-      <div class="c-label">seconds</div>
+      <div class="c-lbl">seconds</div>
     </div>
   </div>
-  <h2 style="font-family:var(--display);font-size:24px;font-weight:300;margin-bottom:6px" id="cd-name">–</h2>
+  <h2 style="font-family:var(--display);font-size:22px;font-weight:300;margin-bottom:5px" id="cd-name">–</h2>
   <p style="font-size:13px;color:var(--muted);text-align:center;white-space:pre-line" id="cd-desc">–</p>
   <div class="mic-bars">
     <div class="mb-item"><div class="mb-track"><div class="mb-fill" id="mb1" style="height:0%;background:var(--left)"></div></div><div class="mb-tag">M1</div></div>
     <div class="mb-item"><div class="mb-track"><div class="mb-fill" id="mb2" style="height:0%;background:var(--right)"></div></div><div class="mb-tag">M2</div></div>
   </div>
-  <button class="btn btn-ghost btn-sm" style="margin-top:22px" onclick="skipToSummary()">Finish Early → See Results</button>
+  <button class="btn btn-ghost btn-sm" style="margin-top:20px" onclick="skipToSummary()">Finish Early → See Results</button>
 </div>
 
 <!-- REST -->
@@ -255,168 +353,263 @@ canvas+canvas{margin-top:8px}
 <!-- SUMMARY -->
 <div class="screen" id="screen-summary">
   <h2 class="sum-title">Calibration Complete</h2>
-  <p class="sum-sub">Here's what we learned about your breathing signal.</p>
+  <p class="sum-sub">Your personal breathing profile has been built from the scenarios you completed.</p>
   <div class="sum-grid">
     <div class="sum-card">
-      <div class="sum-label">Dominant Nostril</div>
-      <div class="sum-value" id="sum-dominant" style="color:var(--accent)">–</div>
-      <div class="sum-note" id="sum-dominant-note">–</div>
+      <div class="sum-lbl">Analysis Depth</div>
+      <div class="sum-val" id="sum-depth" style="color:var(--accent)">–</div>
+      <div class="sum-note" id="sum-depth-note">–</div>
     </div>
     <div class="sum-card">
-      <div class="sum-label">Signal Quality</div>
-      <div class="sum-value" id="sum-quality" style="color:var(--success)">–</div>
+      <div class="sum-lbl">Signal Quality</div>
+      <div class="sum-val" id="sum-quality" style="color:var(--success)">–</div>
       <div class="sum-note" id="sum-quality-note">–</div>
     </div>
     <div class="sum-card">
-      <div class="sum-label">MIC1 Threshold</div>
-      <div class="sum-value" id="sum-t1" style="color:var(--left)">–</div>
+      <div class="sum-lbl">MIC1 Threshold</div>
+      <div class="sum-val" id="sum-t1" style="color:var(--left)">–</div>
       <div class="sum-note">yellow · left nostril</div>
     </div>
     <div class="sum-card">
-      <div class="sum-label">MIC2 Threshold</div>
-      <div class="sum-value" id="sum-t2" style="color:var(--right)">–</div>
+      <div class="sum-lbl">MIC2 Threshold</div>
+      <div class="sum-val" id="sum-t2" style="color:var(--right)">–</div>
       <div class="sum-note">blue · right nostril</div>
     </div>
   </div>
-  <div class="sum-box">
-    <div class="sum-box-title">Scenarios Completed</div>
-    <div id="sum-scenarios-list"></div>
-  </div>
+  <div class="cap-grid" id="sum-caps"></div>
   <button class="btn" onclick="startLiveSession()" style="border-radius:100px">Continue to Live Monitoring →</button>
 </div>
 
 <!-- LIVE -->
-<div class="screen" id="screen-live" style="justify-content:flex-start;padding-top:20px">
+<div class="screen" id="screen-live" style="justify-content:flex-start;overflow-y:auto">
   <button class="disconnect-btn vis" onclick="disconnectDevice()">✕ Disconnect</button>
-  <div class="live-header">
-    <div class="live-title">Live Breathing</div>
-    <div class="session-badge"><div class="rec-dot"></div><span id="session-timer">0:00</span></div>
-  </div>
 
-  <!-- Row 1 -->
-  <div class="stats-row">
-    <div class="stat-card">
-      <div class="stat-label">Breath Rate</div>
-      <div class="stat-value" id="stat-rate" style="color:var(--accent)">–</div>
-      <div class="stat-unit">breaths / min</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Total Breaths</div>
-      <div class="stat-value" id="stat-total">0</div>
-      <div class="stat-unit">this session</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Avg Duration</div>
-      <div class="stat-value" id="stat-duration">–</div>
-      <div class="stat-unit">seconds / breath</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Pattern</div>
-      <div class="stat-value" id="stat-pattern" style="font-size:15px;padding-top:5px">–</div>
-      <div class="stat-unit" id="stat-pattern-note">–</div>
-    </div>
-  </div>
+  <div class="live-wrap">
 
-  <!-- Row 2 -->
-  <div class="stats-row">
-    <div class="stat-card">
-      <div class="stat-label">MIC1 · Yellow</div>
-      <div class="stat-value" id="stat-m1" style="color:var(--left)">–</div>
-      <div class="stat-unit">raw amplitude</div>
+    <!-- Header -->
+    <div class="live-header">
+      <div class="live-title">Live Breathing</div>
+      <div class="sess-right">
+        <div class="session-badge"><div class="rec-dot"></div><span id="session-timer">0:00</span></div>
+      </div>
     </div>
-    <div class="stat-card">
-      <div class="stat-label">MIC2 · Blue</div>
-      <div class="stat-value" id="stat-m2" style="color:var(--right)">–</div>
-      <div class="stat-unit">raw amplitude</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Dominant Nostril</div>
-      <div class="stat-value" id="stat-dominant" style="font-size:15px;padding-top:5px">–</div>
-      <div class="stat-unit">last 60 seconds</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Nasal Cycle</div>
-      <div class="stat-value" id="stat-cycle" style="font-size:15px;padding-top:5px">–</div>
-      <div class="stat-unit" id="stat-cycle-note">–</div>
-    </div>
-  </div>
 
-  <!-- Nostril indicator -->
-  <div class="nostril-wrap">
-    <span class="nostril-label">Active</span>
-    <div class="nostril-pills">
-      <div class="n-pill" id="pill-left">← Left</div>
-      <div class="n-pill" id="pill-both">Both</div>
-      <div class="n-pill" id="pill-right">Right →</div>
+    <!-- Calibration profile -->
+    <div class="profile-bar">
+      <span class="profile-lbl">Active</span>
+      <div class="feat-pill" id="feat-threshold"><div class="feat-dot"></div>Threshold</div>
+      <div class="feat-pill" id="feat-nostril"><div class="feat-dot"></div>Nostril Analysis</div>
+      <div class="feat-pill" id="feat-depth"><div class="feat-dot"></div>Breath Depth</div>
+      <div class="feat-pill" id="feat-artefact"><div class="feat-dot"></div>Artefact Detection</div>
+      <div class="feat-pill" id="feat-motion"><div class="feat-dot"></div>Motion Detection</div>
     </div>
-    <div class="nostril-intensity" id="nostril-intensity">–</div>
-  </div>
 
-  <!-- Waveforms -->
-  <div class="waveform-wrap">
-    <div class="wave-labels">
-      <span class="wave-label" style="color:var(--left)">▸ MIC1 Yellow</span>
-      <span class="wave-label" style="color:var(--right)">▸ MIC2 Blue</span>
+    <!-- Row 1: core stats (always) -->
+    <div class="stats-row cols4">
+      <div class="stat-card">
+        <div class="stat-lbl">Breath Rate</div>
+        <div class="stat-val" id="stat-rate" style="color:var(--accent)">–</div>
+        <div class="stat-unit">breaths / min</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-lbl">Total Breaths</div>
+        <div class="stat-val" id="stat-total">0</div>
+        <div class="stat-unit">this session</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-lbl">Pattern</div>
+        <div class="stat-val" id="stat-pattern" style="font-size:16px;padding-top:4px">–</div>
+        <div class="stat-unit" id="stat-pattern-note">–</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-lbl">Avg Duration</div>
+        <div class="stat-val" id="stat-duration">–</div>
+        <div class="stat-unit">seconds / breath</div>
+      </div>
     </div>
-    <canvas id="wave1" height="70"></canvas>
-    <canvas id="wave2" height="70"></canvas>
-  </div>
 
-  <!-- Bottom bar -->
-  <div class="live-bottom">
-    <div style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:1px">
-      thr MIC1: <span id="thr1-live">–</span>&nbsp;·&nbsp;thr MIC2: <span id="thr2-live">–</span>
+    <!-- Row 2: calibrated stats (conditional) -->
+    <div class="stats-row cols4">
+      <div class="stat-card" id="card-depth">
+        <div class="stat-lbl">Breath Depth</div>
+        <div class="stat-val" id="stat-depth" style="font-size:16px;padding-top:4px">–</div>
+        <div class="stat-unit" id="stat-depth-note">–</div>
+        <div class="lock-badge" id="lock-depth">🔒</div>
+      </div>
+      <div class="stat-card" id="card-dominant">
+        <div class="stat-lbl">Dominant Nostril</div>
+        <div class="stat-val" id="stat-dominant" style="font-size:16px;padding-top:4px">–</div>
+        <div class="stat-unit">last 60 seconds</div>
+        <div class="lock-badge" id="lock-dominant">🔒</div>
+      </div>
+      <div class="stat-card" id="card-cycle">
+        <div class="stat-lbl">Nasal Cycle</div>
+        <div class="stat-val" id="stat-cycle" style="font-size:16px;padding-top:4px">–</div>
+        <div class="stat-unit" id="stat-cycle-note">–</div>
+        <div class="lock-badge" id="lock-cycle">🔒</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-lbl">MIC1 · MIC2</div>
+        <div class="stat-val" style="font-size:14px;padding-top:2px">
+          <span id="stat-m1" style="color:var(--left)">–</span>
+          <span style="color:var(--muted);font-size:12px"> / </span>
+          <span id="stat-m2" style="color:var(--right)">–</span>
+        </div>
+        <div class="stat-unit">raw amplitude</div>
+      </div>
     </div>
-    <button class="export-btn" onclick="exportCSV()">↓ Export CSV</button>
+
+    <!-- Nostril indicator -->
+    <div class="nostril-wrap">
+      <span class="nostril-lbl">Active</span>
+      <div class="n-pills">
+        <div class="n-pill" id="pill-left">← Left</div>
+        <div class="n-pill" id="pill-both">Both</div>
+        <div class="n-pill" id="pill-right">Right →</div>
+      </div>
+      <div class="n-intens" id="nostril-intensity">–</div>
+    </div>
+
+    <!-- Artefact banner -->
+    <div class="artefact-banner" id="artefact-banner">
+      <span id="artefact-icon">⚠️</span>
+      <span id="artefact-msg">–</span>
+    </div>
+
+    <!-- Waveform -->
+    <div class="wave-wrap">
+      <div class="wave-lbl-row">
+        <span class="wave-lbl" style="color:var(--left)">▸ MIC1 Yellow</span>
+        <span class="wave-lbl" style="color:var(--right)">▸ MIC2 Blue</span>
+      </div>
+      <canvas id="wave1" height="62"></canvas>
+      <canvas id="wave2" height="62"></canvas>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="live-bottom">
+      <div class="thr-info">
+        thr MIC1: <span id="thr1">–</span> &nbsp;·&nbsp; thr MIC2: <span id="thr2">–</span>
+      </div>
+      <div class="bottom-right">
+        <button class="icon-btn recal" onclick="goRecalibrate()">⚙ Recalibrate</button>
+        <button class="icon-btn" onclick="exportCSV()">↓ Export CSV</button>
+      </div>
+    </div>
+
   </div>
 </div>
 
 <div class="error-banner" id="error-banner">–</div>
 
 <script>
-const ALL_SCENARIOS=[
-  {id:'baseline',name:'Baseline',icon:'◎',color:'var(--accent)',
-   desc:'Breathe normally through your nose.\nSit still and relax.',
-   short:'Normal resting breathing — sets your noise floor.',duration:20},
-  {id:'left_nostril',name:'Left Nostril',icon:'◑',color:'var(--left)',
-   desc:'Close your right nostril with a finger.\nBreathe only through your left nostril.',
-   short:'Isolates your left mic signal.',duration:15},
-  {id:'right_nostril',name:'Right Nostril',icon:'◐',color:'var(--right)',
-   desc:'Close your left nostril with a finger.\nBreathe only through your right nostril.',
-   short:'Isolates your right mic signal.',duration:15},
+// ═══════════════════════════════════════════════
+// SCENARIO DEFINITIONS
+// Each entry defines what the scenario contributes
+// ═══════════════════════════════════════════════
+const SCENARIOS = [
+  {id:'baseline', name:'Baseline', icon:'◎', color:'var(--accent)',
+   dur:20, desc:'Breathe normally through your nose.\nSit still and relax.',
+   short:'Sets your personal noise floor.',
+   unlocks:['noise_floor'], tag:'Threshold calibration'},
+  {id:'mouth_only', name:'Mouth Only', icon:'○', color:'var(--danger)',
+   dur:20, desc:'Breathe only through your mouth.\nKeep your nose completely closed.',
+   short:'Confirms true silence baseline.',
+   unlocks:['true_silence'], tag:'Sharper threshold'},
+  {id:'left_nostril', name:'Left Nostril', icon:'◑', color:'var(--left)',
+   dur:15, desc:'Close your right nostril with a finger.\nBreathe only through your left nostril.',
+   short:'Calibrates left mic signal.',
+   unlocks:['left_cal'], tag:'Nostril analysis'},
+  {id:'right_nostril', name:'Right Nostril', icon:'◐', color:'var(--right)',
+   dur:15, desc:'Close your left nostril with a finger.\nBreathe only through your right nostril.',
+   short:'Calibrates right mic signal.',
+   unlocks:['right_cal'], tag:'Nostril analysis'},
+  {id:'deep_breath', name:'Deep Breathing', icon:'◉', color:'var(--both)',
+   dur:20, desc:'Take slow, deep breaths through your nose.\nInhale fully — exhale slowly.',
+   short:'Sets your maximum amplitude.',
+   unlocks:['max_amp'], tag:'Breath depth'},
+  {id:'shallow_breath', name:'Shallow Breathing', icon:'◌', color:'var(--accent)',
+   dur:20, desc:'Breathe as gently as possible through your nose.\nVery quiet, minimal effort.',
+   short:'Sets your minimum breath signal.',
+   unlocks:['min_amp'], tag:'Breath depth'},
+  {id:'talking', name:'Talking', icon:'◎', color:'var(--warn)',
+   dur:20, desc:'Count out loud slowly from 1 to 30.\nKeep your mics in place.',
+   short:'Learns your speech artefact.',
+   unlocks:['speech_sig'], tag:'Artefact detection'},
+  {id:'head_movement', name:'Head Movement', icon:'↕', color:'var(--muted)',
+   dur:20, desc:'Slowly nod your head up and down.\nThen slowly turn left and right.',
+   short:'Learns your motion artefact.',
+   unlocks:['motion_sig'], tag:'Motion detection'},
 ];
 
-let port,reader,lineBuffer='';
-let isConnected=false;
-let selectedIds=new Set(['baseline','left_nostril','right_nostril']);
-let queue=[],queueIdx=0;
-let calData={},currentCalId=null,calTimer=null;
-let thresholds={mic1:80,mic2:80};
-let completedScenarios=[];
-let waveData1=new Array(240).fill(0),waveData2=new Array(240).fill(0);
-let sessionStart=null,sessionTimer=null,sessionLog=[];
-let breathCount=0,lastSide='none',breathStart=null;
-let breathDurations=[],breathTimes=[],dominantLog=[];
-let lastDominant='none',dominantSwitchTime=null,cycleDetected=false;
-let ctx1,ctx2;
+// Live-only special card (not a calibration scenario)
+const LIVE_CARD = {
+  id:'live_only', name:'Live Only', icon:'⚡', color:'var(--muted)',
+  short:'Skip calibration — go straight\nto live monitoring with defaults.',
+  tag:'Basic mode', dur:0
+};
 
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let port, reader, lineBuffer='';
+let isConnected = false;
+let selectedIds = new Set();
+let queue = [], queueIdx = 0;
+let calData = {}, currentCalId = null, calTimer = null;
+let completedScenarios = [];
+
+// Capabilities — unlocked by scenarios
+let caps = {
+  noise_floor:  false,  // from baseline
+  true_silence: false,  // from mouth_only
+  left_cal:     false,  // from left_nostril
+  right_cal:    false,  // from right_nostril
+  max_amp:      false,  // from deep_breath
+  min_amp:      false,  // from shallow_breath
+  speech_sig:   false,  // from talking
+  motion_sig:   false,  // from head_movement
+};
+
+// Calibrated values
+let thresholds  = {mic1:80, mic2:80};
+let maxAmp      = {mic1:300, mic2:300};  // from deep breath
+let minAmp      = {mic1:50,  mic2:50};   // from shallow breath
+let speechSig   = null;  // {m1mean, m2mean, variance}
+let motionSig   = null;  // {simultaneous spike pattern}
+
+// Live state
+let waveData1 = new Array(240).fill(0), waveData2 = new Array(240).fill(0);
+let sessionStart=null, sessionTimer=null, sessionLog=[];
+let breathCount=0, lastSide='none', breathStart=null;
+let breathDurations=[], breathTimes=[], dominantLog=[];
+let lastDominant='none', dominantSwitchTime=null, cycleDetected=false;
+let artefactCooldown=0;
+let ctx1, ctx2;
+
+// ═══════════════════════════════════════════════
+// SCREEN
+// ═══════════════════════════════════════════════
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
+// ═══════════════════════════════════════════════
+// CONNECTION
+// ═══════════════════════════════════════════════
 async function connectDevice(){
   if(!('serial' in navigator)){showError('Use Google Chrome — Web Serial required.');return;}
   try{
     showScreen('screen-connecting');
-    setConnText('Requesting port access…');
-    port=await navigator.serial.requestPort();
-    setConnText('Opening connection…');
+    setConn('Requesting port access…');
+    port = await navigator.serial.requestPort();
+    setConn('Opening connection…');
     await port.open({baudRate:115200});
-    isConnected=true;
-    setConnText('Waiting for board…');
+    isConnected = true;
+    setConn('Waiting for board…');
     readLoop();
-    setTimeout(()=>{buildPickerGrid();updateSelCount();showScreen('screen-picker');},2000);
+    setTimeout(()=>{buildPicker();showScreen('screen-picker');}, 2000);
   }catch(err){
     showScreen('screen-welcome');
     if(err.name!=='NotFoundError') showError('Connection failed: '+err.message);
@@ -431,6 +624,13 @@ async function disconnectDevice(){
   showScreen('screen-welcome');
 }
 
+function goRecalibrate(){
+  if(sessionTimer) clearInterval(sessionTimer);
+  sessionLog=[];
+  buildPicker();
+  showScreen('screen-picker');
+}
+
 async function readLoop(){
   const dec=new TextDecoder();
   reader=port.readable.getReader();
@@ -439,8 +639,7 @@ async function readLoop(){
       const{value,done}=await reader.read();
       if(done) break;
       lineBuffer+=dec.decode(value);
-      const lines=lineBuffer.split('\n');
-      lineBuffer=lines.pop();
+      const lines=lineBuffer.split('\n');lineBuffer=lines.pop();
       for(const line of lines){
         const t=line.trim();
         if(!t||t.includes('"status"')) continue;
@@ -452,55 +651,103 @@ async function readLoop(){
 }
 
 function handleReading(d){
-  const m1=d.m1,m2=d.m2;
-  updateMicBars(m1,m2);
+  updateMicBars(d.m1,d.m2);
   if(currentCalId){
     if(!calData[currentCalId]) calData[currentCalId]=[];
-    calData[currentCalId].push({m1,m2,t:Date.now()});
+    calData[currentCalId].push({m1:d.m1,m2:d.m2,t:Date.now()});
   }
   if(document.getElementById('screen-live').classList.contains('active')){
-    sessionLog.push({t:Date.now(),m1,m2});
-    updateLive(m1,m2);
+    sessionLog.push({t:Date.now(),m1:d.m1,m2:d.m2});
+    updateLive(d.m1,d.m2);
   }
 }
 
-function buildPickerGrid(){
+// ═══════════════════════════════════════════════
+// PICKER
+// ═══════════════════════════════════════════════
+function buildPicker(){
+  selectedIds.clear();
   const g=document.getElementById('picker-grid');
-  g.innerHTML=ALL_SCENARIOS.map(s=>`
-    <div class="s-card selected" id="card-${s.id}" onclick="toggleScenario('${s.id}')">
-      <div class="check">✓</div>
+  // 8 scenario cards + live-only card
+  const cards = SCENARIOS.map(s=>`
+    <div class="s-card" id="card-${s.id}" onclick="toggleS('${s.id}')">
+      <div class="s-check"></div>
       <span class="s-icon" style="color:${s.color}">${s.icon}</span>
       <div class="s-name">${s.name}</div>
-      <div class="s-dur">${s.duration}s</div>
-      <div class="s-short">${s.short}</div>
+      <div class="s-dur">${s.dur}s</div>
+      <div class="s-unlock">
+        <span class="unlock-dot"></span>${s.tag}
+      </div>
     </div>`).join('');
+  // Live only card
+  const liveCard=`
+    <div class="s-card live-card" onclick="skipCalibration()" style="display:flex;flex-direction:column;justify-content:center">
+      <span class="s-icon" style="color:var(--accent)">⚡</span>
+      <div class="s-name">Live Only</div>
+      <div class="s-dur">skip calibration</div>
+      <div class="s-unlock" style="border-top:1px solid var(--border);padding-top:6px;margin-top:4px">
+        Go straight to live monitoring with default thresholds
+      </div>
+    </div>`;
+  g.innerHTML=cards+liveCard;
+  updateAccuracy();
 }
 
-function toggleScenario(id){
+function toggleS(id){
   const card=document.getElementById('card-'+id);
-  if(selectedIds.has(id)){selectedIds.delete(id);card.classList.remove('selected');card.querySelector('.check').textContent='';}
-  else{selectedIds.add(id);card.classList.add('selected');card.querySelector('.check').textContent='✓';}
-  updateSelCount();
+  if(selectedIds.has(id)){
+    selectedIds.delete(id);
+    card.classList.remove('sel');
+    card.querySelector('.s-check').textContent='';
+  }else{
+    selectedIds.add(id);
+    card.classList.add('sel');
+    card.querySelector('.s-check').textContent='✓';
+  }
+  updateAccuracy();
 }
 
-function updateSelCount(){
+function updateAccuracy(){
   const n=selectedIds.size;
-  document.getElementById('sel-count').textContent=n===0?'none selected':`${n} selected`;
+  const pct=Math.min((n/8)*100,100);
+  document.getElementById('acc-fill').style.width=pct+'%';
+  document.getElementById('sel-count').textContent=
+    n===0?'0 selected':`${n} scenario${n>1?'s':''} selected`;
   document.getElementById('btn-begin').disabled=n===0;
+
+  // Level labels and colours
+  let level,color;
+  if(n===0){level='Select scenarios below';color='var(--muted)';}
+  else if(n<=2){level='Basic accuracy';color='var(--muted)';}
+  else if(n<=4){level='Standard accuracy';color='var(--both)';}
+  else if(n<=6){level='Enhanced accuracy';color='var(--accent)';}
+  else{level='Full accuracy';color='var(--success)';}
+  document.getElementById('acc-level').textContent=level;
+  document.getElementById('acc-level').style.color=color;
+  document.getElementById('acc-fill').style.background=color;
 }
 
+// ═══════════════════════════════════════════════
+// CALIBRATION FLOW
+// ═══════════════════════════════════════════════
 function beginCalibration(){
-  queue=ALL_SCENARIOS.filter(s=>selectedIds.has(s.id));
+  queue=SCENARIOS.filter(s=>selectedIds.has(s.id));
   queueIdx=0;completedScenarios=[];calData={};
+  caps=Object.fromEntries(Object.keys(caps).map(k=>[k,false]));
   showGetReady(0);
 }
 
-function skipCalibration(){completedScenarios=[];thresholds={mic1:80,mic2:80};startLiveSession();}
+function skipCalibration(){
+  completedScenarios=[];
+  caps=Object.fromEntries(Object.keys(caps).map(k=>[k,false]));
+  thresholds={mic1:80,mic2:80};
+  buildCapabilities();
+  startLiveSession();
+}
 
 function showGetReady(idx){
   queueIdx=idx;
-  const s=queue[idx];
-  const pct=(idx/queue.length)*100;
+  const s=queue[idx],pct=(idx/queue.length)*100;
   document.getElementById('cal-fill').style.width=pct+'%';
   document.getElementById('cal-fill2').style.width=pct+'%';
   document.getElementById('ready-badge').textContent=`Scenario ${idx+1} of ${queue.length}`;
@@ -522,21 +769,21 @@ function participantReady(){
   document.getElementById('c-fill').style.stroke=s.color;
   document.getElementById('c-num').style.color=s.color;
   const ring=document.getElementById('breath-ring');
-  ring.style.borderColor=s.color;ring.classList.add('active');
+  ring.style.borderColor=s.color;ring.classList.add('on');
   showScreen('screen-countdown');
   currentCalId=s.id;
-  runCountdown(s.duration,queueIdx);
+  runCountdown(s.dur,queueIdx);
 }
 
 function runCountdown(totalSec,idx){
-  const CIRC=565;let rem=totalSec;
-  updateCircle(rem,totalSec,CIRC);
+  const CIRC=534;let rem=totalSec;
+  updCircle(rem,totalSec,CIRC);
   clearInterval(calTimer);
   calTimer=setInterval(()=>{
-    rem--;updateCircle(rem,totalSec,CIRC);
+    rem--;updCircle(rem,totalSec,CIRC);
     if(rem<=0){
       clearInterval(calTimer);currentCalId=null;
-      document.getElementById('breath-ring').classList.remove('active');
+      document.getElementById('breath-ring').classList.remove('on');
       completedScenarios.push(queue[idx].id);
       const next=idx+1;
       if(next<queue.length) showRest(next);
@@ -545,7 +792,7 @@ function runCountdown(totalSec,idx){
   },1000);
 }
 
-function updateCircle(rem,total,circ){
+function updCircle(rem,total,circ){
   document.getElementById('c-fill').style.strokeDashoffset=circ*(1-rem/total);
   document.getElementById('c-num').textContent=rem;
   const pct=((queueIdx+(1-rem/total))/queue.length)*100;
@@ -562,91 +809,204 @@ function showRest(nextIdx){
 
 function skipToSummary(){
   clearInterval(calTimer);currentCalId=null;
-  document.getElementById('breath-ring').classList.remove('active');
+  document.getElementById('breath-ring').classList.remove('on');
   finishCalibration();
 }
 
-function calcStats(vals){
-  if(!vals.length) return{mean:60,std:10,max:80};
+// ═══════════════════════════════════════════════
+// THRESHOLD + CAPABILITY CALCULATION
+// ═══════════════════════════════════════════════
+function stats(vals){
+  if(!vals.length) return{mean:60,std:10,max:80,min:20};
   const mean=vals.reduce((a,b)=>a+b,0)/vals.length;
   const std=Math.sqrt(vals.reduce((a,b)=>a+(b-mean)**2,0)/vals.length);
-  return{mean,std,max:Math.max(...vals)};
+  return{mean,std,max:Math.max(...vals),min:Math.min(...vals)};
 }
 
 function finishCalibration(){
-  const base=calData['baseline']||[];
-  if(base.length){
-    const s1=calcStats(base.map(r=>r.m1));
-    const s2=calcStats(base.map(r=>r.m2));
-    thresholds.mic1=Math.round(s1.mean+2*s1.std);
-    thresholds.mic2=Math.round(s2.mean+2*s2.std);
-  }
-  let dominant='Equal';
-  const ld=calData['left_nostril']||[];
-  const rd=calData['right_nostril']||[];
-  if(ld.length&&rd.length){
-    const lm=calcStats(ld.map(r=>r.m1)).mean;
-    const rm=calcStats(rd.map(r=>r.m2)).mean;
-    if(lm>rm*1.2) dominant='Left';
-    else if(rm>lm*1.2) dominant='Right';
-  }else if(ld.length) dominant='Left (only left tested)';
-  else if(rd.length) dominant='Right (only right tested)';
+  // ── Mark capabilities ──────────────────────
+  completedScenarios.forEach(id=>{
+    const s=SCENARIOS.find(x=>x.id===id);
+    if(s) s.unlocks.forEach(u=>caps[u]=true);
+  });
 
-  let quality='–',qualNote='No baseline recorded';
+  // ── Calculate thresholds ────────────────────
+  const baseSrc = calData['baseline'] || calData['mouth_only'] || [];
+  const mouthSrc = calData['mouth_only'] || [];
+
+  if(baseSrc.length){
+    // Use stricter of baseline or mouth-only if both available
+    const s1=stats(baseSrc.map(r=>r.m1));
+    const s2=stats(baseSrc.map(r=>r.m2));
+    let t1=Math.round(s1.mean+2*s1.std);
+    let t2=Math.round(s2.mean+2*s2.std);
+    if(mouthSrc.length){
+      const ms1=stats(mouthSrc.map(r=>r.m1));
+      const ms2=stats(mouthSrc.map(r=>r.m2));
+      t1=Math.max(t1,Math.round(ms1.mean+2*ms1.std));
+      t2=Math.max(t2,Math.round(ms2.mean+2*ms2.std));
+    }
+    thresholds={mic1:t1,mic2:t2};
+  }
+
+  // ── Max amplitude (deep breath) ─────────────
+  const deep=calData['deep_breath']||[];
+  if(deep.length){
+    const d1=stats(deep.map(r=>r.m1));
+    const d2=stats(deep.map(r=>r.m2));
+    maxAmp={mic1:d1.max,mic2:d2.max};
+  }
+
+  // ── Min amplitude (shallow breath) ─────────
+  const shallow=calData['shallow_breath']||[];
+  if(shallow.length){
+    const sh1=stats(shallow.map(r=>r.m1));
+    const sh2=stats(shallow.map(r=>r.m2));
+    // min breath = mean of shallow (not its min which could be silence)
+    minAmp={mic1:sh1.mean,mic2:sh2.mean};
+  }
+
+  // ── Speech signature ────────────────────────
+  const talk=calData['talking']||[];
+  if(talk.length){
+    const ts1=stats(talk.map(r=>r.m1));
+    const ts2=stats(talk.map(r=>r.m2));
+    speechSig={m1mean:ts1.mean,m2mean:ts2.mean,variance:ts1.std+ts2.std};
+  }
+
+  // ── Motion signature ────────────────────────
+  const move=calData['head_movement']||[];
+  if(move.length){
+    // Motion = simultaneous spikes on both mics
+    const simultaneous=move.filter(r=>r.m1>thresholds.mic1&&r.m2>thresholds.mic2);
+    motionSig={rate:simultaneous.length/move.length};
+  }
+
+  // ── Build summary screen ────────────────────
+  buildSummaryScreen();
+  buildCapabilities();
+  showScreen('screen-summary');
+}
+
+function buildCapabilities(){
+  // Map caps to feature labels
+  const hasThr   = caps.noise_floor||caps.true_silence;
+  const hasNos   = caps.left_cal&&caps.right_cal;
+  const hasDepth = caps.max_amp&&caps.min_amp;
+  const hasSpch  = caps.speech_sig;
+  const hasMot   = caps.motion_sig;
+
+  // Update profile pills in live screen
+  setPill('feat-threshold', hasThr);
+  setPill('feat-nostril',   hasNos);
+  setPill('feat-depth',     hasDepth);
+  setPill('feat-artefact',  hasSpch);
+  setPill('feat-motion',    hasMot);
+
+  // Show/hide lock badges on stat cards
+  setLock('lock-depth',    !hasDepth);
+  setLock('lock-dominant', !hasNos);
+  setLock('lock-cycle',    !hasNos);
+  if(!hasDepth) document.getElementById('card-depth').classList.add('locked-card');
+  else document.getElementById('card-depth').classList.remove('locked-card');
+}
+
+function setPill(id,active){
+  const el=document.getElementById(id);
+  if(active) el.classList.add('on'); else el.classList.remove('on');
+}
+function setLock(id,locked){
+  const el=document.getElementById(id);
+  if(el) el.style.display=locked?'block':'none';
+}
+
+function buildSummaryScreen(){
+  const n=completedScenarios.length;
+  let depth,depthNote;
+  if(n===0){depth='Basic';depthNote='Default thresholds only';}
+  else if(n<=2){depth='Standard';depthNote='Threshold calibrated';}
+  else if(n<=4){depth='Enhanced';depthNote='Nostril analysis active';}
+  else if(n<=6){depth='Comprehensive';depthNote='Depth classification active';}
+  else{depth='Full';depthNote='All features active';}
+
+  document.getElementById('sum-depth').textContent=depth;
+  document.getElementById('sum-depth-note').textContent=depthNote;
+  document.getElementById('sum-t1').textContent=thresholds.mic1;
+  document.getElementById('sum-t2').textContent=thresholds.mic2;
+
+  // Signal quality
+  const base=calData['baseline']||[];
+  let quality='Default',qualNote='No baseline recorded';
   if(base.length){
-    const s1=calcStats(base.map(r=>r.m1));
+    const s1=stats(base.map(r=>r.m1));
     const snr=s1.mean/(s1.std||1);
     if(snr>8){quality='Excellent';qualNote='Very clean signal';}
     else if(snr>4){quality='Good';qualNote='Suitable for analysis';}
     else if(snr>2){quality='Fair';qualNote='Some noise present';}
     else{quality='Poor';qualNote='Check mic placement';}
   }
-
-  document.getElementById('sum-dominant').textContent=dominant;
-  document.getElementById('sum-dominant-note').textContent=
-    dominant==='Equal'?'Both nostrils similar':`${dominant.split(' ')[0]} nostril shows stronger signal`;
   document.getElementById('sum-quality').textContent=quality;
   document.getElementById('sum-quality-note').textContent=qualNote;
-  document.getElementById('sum-t1').textContent=thresholds.mic1;
-  document.getElementById('sum-t2').textContent=thresholds.mic2;
 
-  const rows=completedScenarios.map(id=>{
-    const s=ALL_SCENARIOS.find(x=>x.id===id);
-    return s?`<div class="sum-row">
-      <span class="sum-row-key">${s.icon} ${s.name}</span>
-      <span class="sum-row-val" style="color:var(--success)">✓ Completed</span></div>`:'';
-  }).join('');
-  document.getElementById('sum-scenarios-list').innerHTML=rows||
-    '<div class="sum-row"><span class="sum-row-key" style="color:var(--muted)">No scenarios completed — using default thresholds</span></div>';
-
-  showScreen('screen-summary');
+  // Capability tags
+  const capDefs=[
+    {key:'noise_floor',  label:'Noise Floor',      active:caps.noise_floor},
+    {key:'true_silence', label:'True Silence Ref',  active:caps.true_silence},
+    {key:'left_cal',     label:'Left Mic Calibrated',active:caps.left_cal},
+    {key:'right_cal',    label:'Right Mic Calibrated',active:caps.right_cal},
+    {key:'max_amp',      label:'Max Amplitude',     active:caps.max_amp},
+    {key:'min_amp',      label:'Min Amplitude',     active:caps.min_amp},
+    {key:'speech_sig',   label:'Speech Signature',  active:caps.speech_sig},
+    {key:'motion_sig',   label:'Motion Signature',  active:caps.motion_sig},
+  ];
+  document.getElementById('sum-caps').innerHTML=capDefs.map(c=>`
+    <div class="cap-tag ${c.active?'active':''}">
+      <div class="cap-dot"></div>${c.label}
+    </div>`).join('');
 }
 
+// ═══════════════════════════════════════════════
+// LIVE SESSION
+// ═══════════════════════════════════════════════
 function startLiveSession(){
-  sessionStart=Date.now();sessionLog=[];breathCount=0;lastSide='none';breathStart=null;
-  breathDurations=[];breathTimes=[];dominantLog=[];lastDominant='none';
-  dominantSwitchTime=null;cycleDetected=false;
-  document.getElementById('thr1-live').textContent=thresholds.mic1;
-  document.getElementById('thr2-live').textContent=thresholds.mic2;
+  sessionStart=Date.now();sessionLog=[];
+  breathCount=0;lastSide='none';breathStart=null;
+  breathDurations=[];breathTimes=[];dominantLog=[];
+  lastDominant='none';dominantSwitchTime=null;cycleDetected=false;
+  artefactCooldown=0;
+
+  document.getElementById('thr1').textContent=thresholds.mic1;
+  document.getElementById('thr2').textContent=thresholds.mic2;
   document.getElementById('stat-cycle').textContent='–';
   document.getElementById('stat-cycle-note').textContent='–';
+  document.getElementById('artefact-banner').classList.remove('show');
+
+  buildCapabilities();
+
   const c1=document.getElementById('wave1'),c2=document.getElementById('wave2');
   ctx1=c1.getContext('2d');ctx2=c2.getContext('2d');
-  function sz(){c1.width=c1.offsetWidth*devicePixelRatio;c1.height=70*devicePixelRatio;
-    c2.width=c2.offsetWidth*devicePixelRatio;c2.height=70*devicePixelRatio;}
+  function sz(){c1.width=c1.offsetWidth*devicePixelRatio;c1.height=62*devicePixelRatio;
+    c2.width=c2.offsetWidth*devicePixelRatio;c2.height=62*devicePixelRatio;}
   sz();window.addEventListener('resize',sz);
+
   showScreen('screen-live');
+
   sessionTimer=setInterval(()=>{
     const e=Math.floor((Date.now()-sessionStart)/1000);
     document.getElementById('session-timer').textContent=
       `${Math.floor(e/60)}:${(e%60).toString().padStart(2,'0')}`;
   },1000);
+
   requestAnimationFrame(renderWaves);
 }
 
+// ═══════════════════════════════════════════════
+// LIVE UPDATE
+// ═══════════════════════════════════════════════
 function updateLive(m1,m2){
   waveData1.push(m1);waveData2.push(m2);
   if(waveData1.length>240){waveData1.shift();waveData2.shift();}
+
   document.getElementById('stat-m1').textContent=m1;
   document.getElementById('stat-m2').textContent=m2;
 
@@ -656,14 +1016,15 @@ function updateLive(m1,m2){
 
   const now=Date.now();
 
-  if(side!=='none'&&lastSide==='none'){breathCount++;breathStart=now;breathTimes.push(now);
-    document.getElementById('stat-total').textContent=breathCount;}
+  // Breath events
+  if(side!=='none'&&lastSide==='none'){
+    breathCount++;breathStart=now;breathTimes.push(now);
+    document.getElementById('stat-total').textContent=breathCount;
+  }
   if(side==='none'&&lastSide!=='none'&&breathStart){
-    breathDurations.push((now-breathStart)/1000);breathStart=null;}
+    breathDurations.push((now-breathStart)/1000);breathStart=null;
+  }
   lastSide=side;
-
-  if(side!=='none'&&side!=='both') dominantLog.push({side,t:now});
-  dominantLog=dominantLog.filter(e=>e.t>now-60000);
 
   // Breath rate
   breathTimes=breathTimes.filter(t=>t>now-60000);
@@ -678,65 +1039,122 @@ function updateLive(m1,m2){
 
   // Pattern
   if(breathTimes.length>=4){
-    const iv=[];for(let i=1;i<breathTimes.length;i++) iv.push(breathTimes[i]-breathTimes[i-1]);
+    const iv=[];
+    for(let i=1;i<breathTimes.length;i++) iv.push(breathTimes[i]-breathTimes[i-1]);
     const mn=iv.reduce((a,b)=>a+b,0)/iv.length;
     const std=Math.sqrt(iv.reduce((a,b)=>a+(b-mn)**2,0)/iv.length);
     const cv=std/mn;
     const el=document.getElementById('stat-pattern');
-    if(cv<0.25){el.textContent='Regular';el.style.color='var(--success)';document.getElementById('stat-pattern-note').textContent='steady rhythm';}
-    else if(cv<0.5){el.textContent='Variable';el.style.color='var(--both)';document.getElementById('stat-pattern-note').textContent='some variation';}
-    else{el.textContent='Irregular';el.style.color='var(--danger)';document.getElementById('stat-pattern-note').textContent='high variation';}
-  }else{document.getElementById('stat-pattern').textContent='…';document.getElementById('stat-pattern-note').textContent='collecting data';}
+    if(cv<0.25){el.textContent='Regular';el.style.color='var(--success)';
+      document.getElementById('stat-pattern-note').textContent='steady rhythm';}
+    else if(cv<0.5){el.textContent='Variable';el.style.color='var(--both)';
+      document.getElementById('stat-pattern-note').textContent='some variation';}
+    else{el.textContent='Irregular';el.style.color='var(--danger)';
+      document.getElementById('stat-pattern-note').textContent='high variation';}
+  }else{
+    document.getElementById('stat-pattern').textContent='…';
+    document.getElementById('stat-pattern-note').textContent='collecting data';
+  }
 
-  // Dominant nostril
-  if(dominantLog.length){
-    const lc=dominantLog.filter(e=>e.side==='left').length;
-    const rc=dominantLog.filter(e=>e.side==='right').length;
-    let dom='–';
-    if(lc>rc*1.3) dom='← Left';
-    else if(rc>lc*1.3) dom='Right →';
-    else if(lc||rc) dom='Equal';
-    const de=document.getElementById('stat-dominant');
-    de.textContent=dom;
-    de.style.color=dom.includes('Left')?'var(--left)':dom.includes('Right')?'var(--right)':'var(--muted)';
+  // ── DEPTH (needs max_amp + min_amp) ──────────
+  if(caps.max_amp&&caps.min_amp){
+    const peak=Math.max(m1,m2);
+    const range=Math.max(maxAmp.mic1-minAmp.mic1,10);
+    const pct=Math.min(Math.max(((peak-minAmp.mic1)/range)*100,0),100);
+    const depth_el=document.getElementById('stat-depth');
+    const depth_note=document.getElementById('stat-depth-note');
+    if(side==='none'){depth_el.textContent='–';depth_note.textContent='no breath';}
+    else if(pct>70){depth_el.textContent='Deep';depth_el.style.color='var(--accent)';depth_note.textContent=pct.toFixed(0)+'% of max';}
+    else if(pct>35){depth_el.textContent='Normal';depth_el.style.color='var(--success)';depth_note.textContent=pct.toFixed(0)+'% of max';}
+    else{depth_el.textContent='Shallow';depth_el.style.color='var(--warn)';depth_note.textContent=pct.toFixed(0)+'% of max';}
+  }
 
-    // Nasal cycle
-    if(!cycleDetected){
-      const cur=lc>rc?'left':'right';
-      if(cur!==lastDominant){
-        if(!dominantSwitchTime) dominantSwitchTime=now;
-        else if(now-dominantSwitchTime>30000){
-          cycleDetected=true;
-          document.getElementById('stat-cycle').textContent='Detected';
-          document.getElementById('stat-cycle').style.color='var(--accent)';
-          document.getElementById('stat-cycle-note').textContent='nostril switch observed';
-          lastDominant=cur;dominantSwitchTime=null;
-        }
-      }else{
-        dominantSwitchTime=null;
-        if(breathCount>5&&document.getElementById('stat-cycle').textContent==='–'){
-          document.getElementById('stat-cycle').textContent='Watching';
-          document.getElementById('stat-cycle').style.color='var(--muted)';
-          document.getElementById('stat-cycle-note').textContent='monitoring for switch';
+  // ── DOMINANT NOSTRIL (needs left_cal + right_cal) ───
+  if(caps.left_cal&&caps.right_cal){
+    if(side!=='none'&&side!=='both') dominantLog.push({side,t:now});
+    dominantLog=dominantLog.filter(e=>e.t>now-60000);
+    if(dominantLog.length){
+      const lc=dominantLog.filter(e=>e.side==='left').length;
+      const rc=dominantLog.filter(e=>e.side==='right').length;
+      let dom='–';
+      if(lc>rc*1.3) dom='← Left';
+      else if(rc>lc*1.3) dom='Right →';
+      else if(lc||rc) dom='Equal';
+      const de=document.getElementById('stat-dominant');
+      de.textContent=dom;
+      de.style.color=dom.includes('Left')?'var(--left)':dom.includes('Right')?'var(--right)':'var(--muted)';
+
+      // Nasal cycle
+      if(!cycleDetected){
+        const cur=lc>rc?'left':'right';
+        if(cur!==lastDominant&&(lc||rc)){
+          if(!dominantSwitchTime) dominantSwitchTime=now;
+          else if(now-dominantSwitchTime>30000){
+            cycleDetected=true;
+            document.getElementById('stat-cycle').textContent='Detected';
+            document.getElementById('stat-cycle').style.color='var(--accent)';
+            document.getElementById('stat-cycle-note').textContent='nostril switch observed';
+            lastDominant=cur;dominantSwitchTime=null;
+          }
+        }else{
+          dominantSwitchTime=null;
+          if(breathCount>5&&document.getElementById('stat-cycle').textContent==='–'){
+            document.getElementById('stat-cycle').textContent='Watching';
+            document.getElementById('stat-cycle').style.color='var(--muted)';
+            document.getElementById('stat-cycle-note').textContent='monitoring for switch';
+          }
         }
       }
     }
-  }else{document.getElementById('stat-dominant').textContent='–';}
+  }
 
-  // Nostril pills
+  // ── ARTEFACT DETECTION ──────────────────────
+  artefactCooldown=Math.max(0,artefactCooldown-1);
+  if(artefactCooldown===0){
+    let artefact=null;
+
+    // Speech: high variance + both mics active simultaneously
+    if(caps.speech_sig&&speechSig&&b1&&b2){
+      const expectedVariance=speechSig.variance;
+      const currentLevel=(m1+m2)/2;
+      const speechLevel=(speechSig.m1mean+speechSig.m2mean)/2;
+      if(Math.abs(currentLevel-speechLevel)<speechSig.variance*0.8){
+        artefact={type:'speech',msg:'Possible speech artefact detected — check data'};
+      }
+    }
+    // Motion: simultaneous sharp spike on both mics above a high threshold
+    if(!artefact&&caps.motion_sig&&b1&&b2&&m1>thresholds.mic1*2&&m2>thresholds.mic2*2){
+      artefact={type:'motion',msg:'Possible motion artefact detected'};
+    }
+
+    if(artefact){
+      document.getElementById('artefact-msg').textContent=artefact.msg;
+      document.getElementById('artefact-banner').classList.add('show');
+      artefactCooldown=20;
+    }else{
+      document.getElementById('artefact-banner').classList.remove('show');
+    }
+  }
+
+  // ── NOSTRIL PILLS ────────────────────────────
   ['pill-left','pill-both','pill-right'].forEach(id=>document.getElementById(id).className='n-pill');
-  if(side==='left') document.getElementById('pill-left').classList.add('active-left');
-  if(side==='right') document.getElementById('pill-right').classList.add('active-right');
-  if(side==='both')['pill-left','pill-both','pill-right'].forEach(id=>document.getElementById(id).classList.add('active-both'));
+  if(side==='left') document.getElementById('pill-left').classList.add('al');
+  if(side==='right') document.getElementById('pill-right').classList.add('ar');
+  if(side==='both')['pill-left','pill-both','pill-right'].forEach(id=>document.getElementById(id).classList.add('ab'));
 
-  // Intensity
   const peak=Math.max(m1,m2),thr=Math.min(thresholds.mic1,thresholds.mic2);
   document.getElementById('nostril-intensity').textContent=
     side!=='none'?`${Math.min(((peak-thr)/thr*100),100).toFixed(0)}% intensity`:'–';
 }
 
+// ═══════════════════════════════════════════════
+// WAVEFORM
+// ═══════════════════════════════════════════════
 function renderWaves(){
-  if(ctx1&&ctx2){drawWave(ctx1,waveData1,'#52d9a0',thresholds.mic1);drawWave(ctx2,waveData2,'#c084fc',thresholds.mic2);}
+  if(ctx1&&ctx2){
+    drawWave(ctx1,waveData1,'#52d9a0',thresholds.mic1);
+    drawWave(ctx2,waveData2,'#c084fc',thresholds.mic2);
+  }
   requestAnimationFrame(renderWaves);
 }
 
@@ -749,25 +1167,32 @@ function drawWave(ctx,data,color,thr){
   const g=ctx.createLinearGradient(0,0,0,H);
   g.addColorStop(0,color+'38');g.addColorStop(1,color+'00');
   ctx.beginPath();
-  data.forEach((v,i)=>{const x=(i/(data.length-1))*W,y=H-Math.min(v/MAX,1)*H;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+  data.forEach((v,i)=>{const x=(i/(data.length-1))*W,y=H-Math.min(v/MAX,1)*H;
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
   ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.closePath();ctx.fillStyle=g;ctx.fill();
   ctx.beginPath();
-  data.forEach((v,i)=>{const x=(i/(data.length-1))*W,y=H-Math.min(v/MAX,1)*H;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+  data.forEach((v,i)=>{const x=(i/(data.length-1))*W,y=H-Math.min(v/MAX,1)*H;
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
   ctx.strokeStyle=color;ctx.lineWidth=1.5*devicePixelRatio;ctx.stroke();
 }
 
+// ═══════════════════════════════════════════════
+// EXPORT
+// ═══════════════════════════════════════════════
 function exportCSV(){
   if(!sessionLog.length){showError('No data to export yet.');return;}
-  const hdr='host_time,mic1,mic2\n';
   const rows=sessionLog.map(r=>`${(r.t/1000).toFixed(3)},${r.m1},${r.m2}`).join('\n');
-  const blob=new Blob([hdr+rows],{type:'text/csv'});
+  const blob=new Blob(['host_time,mic1,mic2\n'+rows],{type:'text/csv'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');a.href=url;
   a.download=`nasal_${new Date().toISOString().slice(0,19).replace(/:/g,'-')}.csv`;
   a.click();URL.revokeObjectURL(url);
 }
 
-function setConnText(t){document.getElementById('conn-text').textContent=t;}
+// ═══════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════
+function setConn(t){document.getElementById('conn-text').textContent=t;}
 function updateMicBars(m1,m2){const MAX=300;
   document.getElementById('mb1').style.height=Math.min((m1/MAX)*100,100)+'%';
   document.getElementById('mb2').style.height=Math.min((m2/MAX)*100,100)+'%';}
