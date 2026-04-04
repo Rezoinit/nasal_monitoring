@@ -1,77 +1,78 @@
 # examples/gaze_breath.py
 # ─────────────────────────────────────────────────
-# Full synchronized session:
-# Tobii gaze + XIAO nasal breathing → CSV file
+# Full synchronized session recording.
+# Tobii gaze + XIAO breathing → CSV file.
+# All raw values saved — no filtering.
 #
 # BEFORE RUNNING:
 #   1. Power on Tobii Recording Unit
-#   2. Connect Mac to Tobii WiFi network
-#   3. Find Tobii IP (see below)
-#   4. Plug XIAO into Mac via USB
+#   2. Connect Mac to Tobii WiFi
+#   3. Plug XIAO into Mac via USB
 # ─────────────────────────────────────────────────
-
 import csv
 import time
 from nasal_monitor import NasalMonitor, TobiiReader, Synchronizer
 
 # ── CONFIGURATION ─────────────────────────────────
-# Option A: Auto-discover Tobii IP
-TOBII_IP = TobiiReader.discover()
-
-# Option B: Set IP manually if you know it
-# TOBII_IP = "192.168.71.50"
-
-OUTPUT_FILE = f"session_{int(time.time())}.csv"
+TOBII_IP    = TobiiReader.discover()   # auto-find Tobii
+# TOBII_IP  = "192.168.71.50"          # or set manually
+OUTPUT_FILE = f"gaze_breath_{int(time.time())}.csv"
 # ─────────────────────────────────────────────────
 
-xiao  = NasalMonitor()         # auto-detects USB port
+xiao  = NasalMonitor()
 tobii = TobiiReader(TOBII_IP)
 sync  = Synchronizer(xiao, tobii)
 
 with open(OUTPUT_FILE, "w", newline="") as f:
     writer = csv.writer(f)
 
-    # Header row
+    # Full header — every raw field
     writer.writerow([
-        "host_time",
-        "gaze_x", "gaze_y",
-        "pupil_left", "pupil_right", "gaze_valid",
-        "breath_side", "breath_intensity",
-        "mic1_raw", "mic2_raw",
+        "host_time",      # Mac Unix timestamp
+        "board_ms",       # nRF board millis()
+        "seq",            # packet sequence number
+        "mic1",           # yellow mic raw
+        "mic2",           # blue mic raw
+        "chip_temp_c",    # chip temperature °C
+        "gaze_x",         # 0.0–1.0 or -1 if invalid
+        "gaze_y",         # 0.0–1.0 or -1 if invalid
+        "pupil_left",     # mm or -1 if invalid
+        "pupil_right",    # mm or -1 if invalid
+        "gaze_valid",     # True/False
     ])
 
     @sync.on_event
     def handle(event):
-        # Save to CSV
         writer.writerow([
             f"{event.host_time:.4f}",
+            event.board_ms,
+            event.seq,
+            event.mic1_raw,
+            event.mic2_raw,
+            f"{event.chip_temp_c:.2f}",
             f"{event.gaze_x:.4f}",
             f"{event.gaze_y:.4f}",
             f"{event.pupil_left:.2f}",
             f"{event.pupil_right:.2f}",
             event.gaze_valid,
-            event.breath_side,
-            f"{event.breath_intensity:.2f}",
-            event.mic1_raw,
-            event.mic2_raw,
         ])
         f.flush()
 
-        # Print live summary
+        # Live terminal summary
         gaze_str = (
             f"gaze=({event.gaze_x:.2f},{event.gaze_y:.2f})"
-            if event.gaze_valid
-            else "gaze=INVALID"
+            if event.gaze_valid else "gaze=INVALID    "
         )
         print(
+            f"seq={event.seq:5d}  "
             f"{gaze_str}  "
-            f"pupil=({event.pupil_left:.1f},{event.pupil_right:.1f})  "
-            f"breath={event.breath_side:6s}  "
-            f"intensity={event.breath_intensity:.2f}"
+            f"mic1={event.mic1_raw:4d}  "
+            f"mic2={event.mic2_raw:4d}  "
+            f"temp={event.chip_temp_c:.1f}°C"
         )
 
-    print(f"Recording to {OUTPUT_FILE}")
-    print("Press Ctrl+C to stop.")
+    print(f"[Session] Recording to: {OUTPUT_FILE}")
+    print("[Session] Press Ctrl+C to stop.")
     sync.start_blocking()
 
-print(f"\nSession saved to {OUTPUT_FILE}")
+print(f"\n[Session] Complete. Saved to {OUTPUT_FILE}")

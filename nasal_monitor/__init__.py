@@ -5,7 +5,7 @@ from .detector      import BreathDetector
 from .tobii_reader  import TobiiReader
 from .synchronizer  import Synchronizer
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 __all__ = [
     "NasalMonitor",
     "TobiiReader",
