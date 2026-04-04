@@ -677,6 +677,12 @@ HTML = r"""
     I'm Ready — Start
   </button>
   <div class="ready-step" id="ready-step">–</div>
+  <div style="margin-top:14px;font-family:'DM Mono',monospace;font-size:11px;
+              color:var(--muted);letter-spacing:1px;">
+    press <kbd style="background:var(--border);border-radius:4px;
+                      padding:2px 7px;font-size:11px;">space</kbd>
+    or click to start
+  </div>
 </div>
 
 <!-- ══ SCREEN 3: CALIBRATION ══════════════════════════ -->
@@ -1027,6 +1033,23 @@ function showToast(msg) {
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2500);
 }
+
+// ── SPACEBAR SHORTCUT ─────────────────────────────────
+// Press Space to trigger the Ready button when visible.
+// Prevents accidental triggers on other screens.
+document.addEventListener('keydown', e => {
+  if (e.code !== 'Space') return;
+  if (e.target.tagName === 'INPUT') return;  // don't fire while typing
+
+  const readyScreen = document.getElementById('screen-ready');
+  const btn         = document.getElementById('btn-ready');
+
+  // Only fire if Get Ready screen is currently active and button enabled
+  if (readyScreen.classList.contains('active') && !btn.disabled) {
+    e.preventDefault();   // stop page from scrolling
+    btn.click();
+  }
+});
 </script>
 </body>
 </html>
