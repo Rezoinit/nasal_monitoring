@@ -20,11 +20,13 @@ The system is designed around three principles:
 
 Connect your XIAO nRF52840 Plus and open the web app in Chrome:
 
-<a href="https://rezoinit.github.io/nasal_monitoring/">
-  <img src="https://img.shields.io/badge/Calibrate-1D6BF3?style=for-the-badge&logoColor=white" alt="Calibrate" height="40"/>
-</a>
+<p align="center">
+  <a href="https://rezoinit.github.io/nasal_monitoring/">
+    <img src="https://img.shields.io/badge/-%F0%9F%AB%81%20%20Calibrate-1D6BF3?style=for-the-badge&logoColor=white" alt="Calibrate" height="56"/>
+  </a>
+</p>
 
-<br><br>
+<br>
 
 The app guides you through a short calibration and then displays live breathing data in real time.
 
@@ -91,7 +93,7 @@ If you use this tool in your research, please cite:
 
     [Your Name] (2025). Nasal Monitor: Synchronized nasal breathing
     and eye gaze acquisition tool. GitHub.
-    https://github.com/YOUR_USERNAME/nasal_monitor
+    https://github.com/rezoinit/nasal_monitoring
 
 ---
 
