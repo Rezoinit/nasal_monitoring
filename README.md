@@ -26,9 +26,9 @@ Connect your XIAO nRF52840 Plus and open the web app in Chrome:
 
 <br><br>
 
-No installation required. The app guides you through a short calibration and then displays live breathing data in real time.
+The app guides you through a short calibration and then displays live breathing data in real time.
 
-> Requires Google Chrome and a XIAO nRF52840 Plus with two analog microphones attached.
+> Requires Google Chrome and a XIAO nRF52840 Plus with microphones attached.
 
 ---
 
