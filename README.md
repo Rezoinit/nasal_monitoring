@@ -22,7 +22,7 @@ Connect your XIAO nRF52840 Plus and open the web app in Chrome:
 
 <p align="center">
   <a href="https://rezoinit.github.io/nasal_monitoring/">
-    <img src="https://img.shields.io/badge/-%F0%9F%AB%81%20%20Calibrate-1D6BF3?style=for-the-badge&logoColor=white" alt="Calibrate" height="56"/>
+    <img src="docs/calibrate-btn.svg" alt="Calibrate" height="72"/>
   </a>
 </p>
 
