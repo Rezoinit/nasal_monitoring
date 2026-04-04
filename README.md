@@ -31,15 +31,19 @@ python examples/gaze_breath.py
 ```
 
 ## Project Structure
-nasal_monitor/
-├── nasal_monitor/
-│   ├── reader.py          # XIAO serial reader
-│   ├── detector.py        # breath detection
-│   ├── models.py          # data classes
-│   ├── tobii_reader.py    # Tobii gaze reader
-│   └── synchronizer.py   # timestamp sync
-└── examples/
 
+    nasal_monitor/
+    ├── nasal_monitor/
+    │   ├── reader.py          # XIAO serial reader
+    │   ├── detector.py        # breath detection
+    │   ├── models.py          # data classes
+    │   ├── tobii_reader.py    # Tobii gaze reader
+    │   └── synchronizer.py   # timestamp sync
+    └── examples/
+        ├── print_data.py
+        ├── live_plot.py
+        ├── save_to_csv.py
+        └── gaze_breath.py
 ## Configuration
 ```python
 # Adjust breath detection sensitivity
