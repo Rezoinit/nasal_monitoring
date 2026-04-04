@@ -1,4 +1,4 @@
-# Nasal Monitor
+# Nasal Breathing Monitoring
 
 Synchronized nasal breathing and eye gaze monitor for research.
 Records raw sensor data at full fidelity — all analysis decisions happen post-hoc.
