@@ -76,21 +76,21 @@ class TobiiReader:
             try:
                 data = self._tobii.get_data()
 
-                gp = data.get("gp", {}).get("l", None)
+                gp = data.get("gp", {}).get("gp", None)
                 if gp is None or len(gp) < 2:
                     time.sleep(0.001)
                     continue
 
-                pd_left  = data.get("pd", {}).get("l", -1.0)
-                pd_right = data.get("pd", {}).get("r", -1.0)
-                valid    = data.get("gp3", {}).get("l") is not None
+                pd_left  = data.get("left_eye",  {}).get("pd", {}).get("pd", -1.0)
+                pd_right = data.get("right_eye", {}).get("pd", {}).get("pd", -1.0)
+                valid    = data.get("gp", {}).get("s", 1) == 0
 
                 gaze = GazeData(
                     host_time   = time.time(),
                     gaze_x      = float(gp[0]),
                     gaze_y      = float(gp[1]),
-                    pupil_left  = float(pd_left)  if pd_left  else -1.0,
-                    pupil_right = float(pd_right) if pd_right else -1.0,
+                    pupil_left  = float(pd_left)  if pd_left  != -1.0 else -1.0,
+                    pupil_right = float(pd_right) if pd_right != -1.0 else -1.0,
                     valid       = valid,
                 )
 
