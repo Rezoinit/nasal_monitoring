@@ -1,36 +1,6 @@
-# Nasal Breathing Monitoring
+# nasal_monitoring
 
-A lightweight research tool for synchronized nasal breathing and eye gaze data collection. Built for wearable use with the Seeed Studio XIAO nRF52840 and Tobii Pro Glasses 2.
-
----
-
-## Overview
-
-Nasal Monitor captures bilateral nasal airflow signals from two analog microphones and synchronizes them with eye gaze data from Tobii Pro Glasses 2. All data is recorded at full fidelity with no on-device filtering — analysis decisions are made post-hoc.
-
-The system is designed around three principles:
-
-- **Collect everything** — raw sensor values, board timestamps, and packet sequence numbers are preserved at every stage
-- **Decide later** — no thresholds or classifications are applied during recording
-- **Synchronize precisely** — a time anchor aligns board and host clocks to millisecond accuracy
-
----
-
-## Play with the sensor
-
-Connect your XIAO nRF52840 Plus and open the web app in Chrome:
-
-<p align="center">
-  <a href="https://rezoinit.github.io/nasal_monitoring/">
-    <img src="docs/calibrate-btn.svg" alt="Calibrate" height="72"/>
-  </a>
-</p>
-
-<br>
-
-The app guides you through a short calibration and then displays live breathing data in real time.
-
-> Requires Google Chrome and a XIAO nRF52840 Plus with microphones attached.
+Standalone Python library for bilateral nasal airflow monitoring using the Seeed Studio XIAO nRF52840 and two analog MEMS microphones. Captures raw ADC signals over USB serial, detects breath events, and records to CSV.
 
 ---
 
@@ -38,62 +8,82 @@ The app guides you through a short calibration and then displays live breathing 
 
 | Component | Role |
 |---|---|
-| Seeed Studio XIAO nRF52840 Plus | Microcontroller — reads microphones, streams JSON over USB |
-| 2× Analog capacitive microphones | Left and right nasal airflow sensors |
-| Tobii Pro Glasses 2 | Eye gaze and pupillometry |
-| 3.7V LiPo battery (JST 1.25mm) | Optional — for wireless wearable deployment |
+| Seeed Studio XIAO nRF52840 Plus | Reads microphones, streams JSON over USB at 115200 baud |
+| 2× Analog capacitive microphones | Left (MIC1) and right (MIC2) nasal airflow |
+| 3.7V LiPo (JST 1.25mm) | Optional — untethered wearable use |
+
+Signal: ~8 Hz, 0–4095 ADC, JSON packets `{"t": ms, "seq": n, "m1": val, "m2": val}`.
 
 ---
 
-## System Architecture
+## Install
 
-    XIAO nRF52840  ──USB──▶  Python library  ──▶  CSV (raw)
-    Tobii Glasses  ──WiFi──▶  Synchronizer   ──▶  CSV (synced)
-                                              ──▶  Live plot
+```bash
+pip install -e .
+```
 
-The Python library runs two independent threads — one for serial data from the XIAO, one for gaze data from Tobii — and merges them by timestamp into a single synchronized event stream.
-
----
-
-## Repository Structure
-
-    nasal_monitor/
-    ├── nasal_monitor/          Python library
-    ├── examples/               Recording and visualization scripts
-    ├── analysis/               Calibration and threshold tools
-    └── docs/                   Web app and detailed documentation
-
-## Documentation
-
-- [Hardware Setup](docs/SETUP.md)
-- [Arduino Sketch](docs/ARDUINO.md)
-- [Python API Reference](docs/PYTHON_API.md)
-- [Calibration Tool](docs/CALIBRATION.md)
+Requires: `pyserial`, `matplotlib`
 
 ---
 
 ## Quick Start
 
-    pip install -e .
-    python examples/print_data.py      # raw readings
-    python examples/live_plot.py       # real-time plot
-    python examples/save_to_csv.py     # record session
+```bash
+python examples/print_data.py        # print raw readings to terminal
+python examples/live_plot.py         # real-time dual-channel plot
+python examples/save_to_csv.py       # record a session to CSV
+```
+
+To run the threshold calibration web UI:
+```bash
+python analysis/threshold_server.py  # opens at http://localhost:5500
+```
+
+Or open `docs/index.html` directly in Chrome via Web Serial API.
 
 ---
 
-## Status
+## Library API
 
-Active development. Tobii integration complete. BLE wireless mode planned for next phase.
+```python
+from nasal_monitor import NasalMonitor, BreathDetector, RawReading, BreathEvent
+
+monitor = NasalMonitor(port="/dev/tty.usbmodem...")
+monitor.start()
+
+detector = BreathDetector()
+for reading in monitor.stream():          # RawReading(t, seq, m1, m2)
+    events = detector.update(reading)     # list of BreathEvent
+```
+
+Key classes:
+
+| Class | Description |
+|---|---|
+| `NasalMonitor` | Serial reader — yields `RawReading` objects |
+| `BreathDetector` | Adaptive threshold breath detection (mean + N×std) |
+| `RawReading` | `t, seq, m1, m2` — raw ADC sample |
+| `BreathEvent` | `t, channel, direction` — detected breath crossing |
 
 ---
 
-## Citation
+## Repository Structure
 
-If you use this tool in your research, please cite:
+```
+nasal_monitor/          Python library
+examples/               Usage scripts
+analysis/               Threshold calibration server
+docs/                   Web app (index.html) and documentation
+```
 
-    [Your Name] (2025). Nasal Monitor: Synchronized nasal breathing
-    and eye gaze acquisition tool. GitHub.
-    https://github.com/rezoinit/nasal_monitoring
+Documentation: [Setup](docs/SETUP.md) · [Arduino](docs/ARDUINO.md) · [API](docs/PYTHON_API.md) · [Calibration](docs/CALIBRATION.md)
+
+---
+
+## Related Repos
+
+- [norad_response](https://github.com/rezoinit/norad_response) — combines this library with Tobii Pro Glasses 2 for arousal research
+- [sleep_monitor](https://github.com/rezoinit/sleep_monitor) — overnight sleep breathing analysis built on this library
 
 ---
 
