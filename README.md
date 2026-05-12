@@ -96,13 +96,6 @@ Documentation: [Setup](docs/SETUP.md) · [Arduino](docs/ARDUINO.md) · [API](doc
 
 ---
 
-## Related Repos
-
-- [norad_response](https://github.com/rezoinit/norad_response) — combines this library with Tobii Pro Glasses 2 for LC-NE research
-- [sleep_monitor](https://github.com/rezoinit/sleep_monitor) — overnight sleep breathing analysis built on this library
-
----
-
 ## License
 
 MIT
