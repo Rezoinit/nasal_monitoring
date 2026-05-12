@@ -4,6 +4,22 @@ Standalone Python library for bilateral nasal airflow monitoring using the Seeed
 
 ---
 
+## Try it in the browser
+
+Connect your XIAO nRF52840 Plus and open the web app in Chrome:
+
+<p align="center">
+  <a href="https://rezoinit.github.io/nasal_monitoring/">
+    <img src="docs/calibrate-btn.svg" alt="Open Web App" height="72"/>
+  </a>
+</p>
+
+The app connects to the device via Web Serial, runs a short calibration, and displays live bilateral breathing data in real time.
+
+> Requires Google Chrome and a XIAO nRF52840 Plus with microphones attached.
+
+---
+
 ## Hardware
 
 | Component | Role |
