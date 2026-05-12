@@ -7,6 +7,5 @@ setup(
     install_requires = [
         "pyserial>=3.5",
         "matplotlib",
-        "tobiiglassesctrl",
     ],
 )
