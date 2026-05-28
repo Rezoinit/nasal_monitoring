@@ -33,6 +33,8 @@
 
 // ── GLOBALS ───────────────────────────────────────
 uint32_t seqCounter = 0;
+int32_t  lastTemp   = 0;   // cached — updated every 10 loops
+uint8_t  tempTick   = 0;
 
 // ─────────────────────────────────────────────────
 void setup() {
@@ -72,7 +74,10 @@ void loop() {
   int      v1   = analogRead(MIC_YELLOW);
   int      v2   = analogRead(MIC_BLUE);
   uint32_t t_ms = millis();
-  int32_t  temp = readChipTemp();
+
+  // Temp changes slowly — update every 10 loops to maximise ADC rate
+  if (++tempTick >= 10) { tempTick = 0; lastTemp = readChipTemp(); }
+  int32_t  temp = lastTemp;
 
   seqCounter++;
 
