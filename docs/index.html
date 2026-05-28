@@ -552,13 +552,11 @@ const LIVE_CARD = {
 // ═══════════════════════════════════════════════
 // PEAK-TO-PEAK ACCUMULATOR
 // Firmware now outputs raw ADC at ~100-200 Hz.
-// We window 250ms of samples and compute max-min
+// We window 60ms of samples and compute max-min
 // before passing to handleReading, so m1/m2 are
 // still peak-to-peak amplitude values as expected.
-// 250ms ≈ 37 samples @ 150 Hz — much better p2p estimate
-// than 60ms (9 samples), matching old firmware quality.
 // ═══════════════════════════════════════════════
-const P2P_WINDOW_MS = 250;
+const P2P_WINDOW_MS = 60;
 let p2pBuffer = [], p2pTimer = null;
 
 function pushToAccumulator(d) {
