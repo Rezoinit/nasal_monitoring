@@ -123,7 +123,7 @@ Columns written by `examples/save_to_csv.py`:
 
 ## Applying Thresholds in Analysis
 
-Thresholds are never applied during recording. Apply them to saved CSV files:
+Thresholds are never applied during recording. The CSV contains raw ADC values at ~150 Hz. Thresholds from the calibration JSON are in **peak-to-peak amplitude units** — compute a rolling p2p window first, then apply.
 
     import json, pandas as pd
 
@@ -135,8 +135,16 @@ Thresholds are never applied during recording. Apply them to saved CSV files:
     t1 = cfg["recommendations"]["mic1"]["recommended"]
     t2 = cfg["recommendations"]["mic2"]["recommended"]
 
-    df["breath_left"]  = df["mic1"] >= t1
-    df["breath_right"] = df["mic2"] >= t2
+    # Estimate sample rate from host timestamps
+    fs = 1.0 / df["host_time"].diff().median()
+
+    # Compute rolling peak-to-peak (same 133ms window as calibration)
+    w = max(1, int(fs * 0.133))
+    df["mic1_p2p"] = df["mic1"].rolling(w).apply(lambda x: x.max() - x.min())
+    df["mic2_p2p"] = df["mic2"].rolling(w).apply(lambda x: x.max() - x.min())
+
+    df["breath_left"]  = df["mic1_p2p"] >= t1
+    df["breath_right"] = df["mic2_p2p"] >= t2
 
 ---
 

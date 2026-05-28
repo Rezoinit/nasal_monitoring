@@ -4,7 +4,7 @@ Nasal Monitor — Threshold Calibration Server
 
 Run this file, then open http://localhost:5500 in Chrome.
 
-    python analysis/threshold_server.py
+    python calibration/threshold_server.py
 
 What it does:
   1. Serves a guided calibration UI in Chrome
@@ -36,9 +36,10 @@ from flask     import Flask, render_template_string
 from flask_socketio import SocketIO, emit
 
 # ── CONFIG ────────────────────────────────────────────────
-PORT        = 5500
-BAUD_RATE   = 115200
-OUTPUT_DIR  = "calibration"
+PORT           = 5500
+BAUD_RATE      = 115200
+OUTPUT_DIR     = "calibration"
+P2P_WINDOW     = 20   # readings per p2p window (~133ms at 150Hz)
 
 # ── SCENARIOS ─────────────────────────────────────────────
 SCENARIOS = [
@@ -1095,7 +1096,9 @@ def find_xiao():
 
 
 def serial_read_loop():
-    """Background thread — reads serial, emits to browser."""
+    """Background thread — reads serial, emits p2p windows to browser."""
+    p2p_buf = []
+
     while state.running and state.serial_conn:
         try:
             line = state.serial_conn.readline().decode("utf-8").strip()
@@ -1115,7 +1118,7 @@ def serial_read_loop():
                 "host": time.time(),
             }
 
-            # Save to CSV
+            # Save raw to CSV (always full fidelity)
             if state.csv_writer:
                 state.csv_writer.writerow([
                     f"{reading['host']:.4f}",
@@ -1136,8 +1139,18 @@ def serial_read_loop():
 
             state.all_raw.append(reading)
 
-            # Emit to browser for live display
-            socketio.emit('raw_reading', {'m1': data["m1"], 'm2': data["m2"]})
+            # Compute p2p window for live browser bars.
+            # Raw ADC (~2048 DC bias) must be converted to peak-to-peak
+            # amplitude before display so the bars reflect breathing signal.
+            p2p_buf.append(reading)
+            if len(p2p_buf) >= P2P_WINDOW:
+                m1v = [r["m1"] for r in p2p_buf]
+                m2v = [r["m2"] for r in p2p_buf]
+                socketio.emit('raw_reading', {
+                    'm1': max(m1v) - min(m1v),
+                    'm2': max(m2v) - min(m2v),
+                })
+                p2p_buf = []
 
         except (json.JSONDecodeError, KeyError):
             continue
@@ -1213,14 +1226,27 @@ def recommend(all_stats):
     return result
 
 
+def to_p2p_windows(values):
+    """Convert raw ADC list to windowed peak-to-peak amplitudes.
+    Uses the same P2P_WINDOW as the live display so thresholds
+    are in the same units as what the researcher sees on screen."""
+    return [
+        max(values[i:i + P2P_WINDOW]) - min(values[i:i + P2P_WINDOW])
+        for i in range(0, len(values) - P2P_WINDOW + 1, P2P_WINDOW)
+    ]
+
+
 def build_results():
     all_stats = {}
     for scenario_id, readings in state.raw_data.items():
-        m1_vals = [r["m1"] for r in readings]
-        m2_vals = [r["m2"] for r in readings]
+        m1_raw = [r["m1"] for r in readings]
+        m2_raw = [r["m2"] for r in readings]
+        # Convert to p2p windows — thresholds must match what live bars show
+        m1_p2p = to_p2p_windows(m1_raw) or m1_raw
+        m2_p2p = to_p2p_windows(m2_raw) or m2_raw
         all_stats[scenario_id] = {
-            "mic1": calc_stats(m1_vals),
-            "mic2": calc_stats(m2_vals),
+            "mic1": calc_stats(m1_p2p),
+            "mic2": calc_stats(m2_p2p),
             "n_samples": len(readings),
         }
     return all_stats, recommend(all_stats)
