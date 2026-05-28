@@ -29,22 +29,6 @@ Two analog capacitive microphones soldered directly to the board.
 
 ---
 
-## Tobii Pro Glasses 2
-
-The Recording Unit connects to your Mac via WiFi.
-
-1. Power on the Recording Unit
-2. On Mac — join the network named `TobiiProGlasses2_XXXXXXXX`
-3. Find the IP address:
-
-        python -c "from nasal_monitor import TobiiReader; TobiiReader.discover()"
-
-4. Default IP is usually `192.168.71.50`
-
-When connected to Tobii WiFi, the Mac has no internet access. This is expected behavior.
-
----
-
 ## Battery (optional)
 
 For wireless wearable deployment, connect a 3.7V LiPo battery to the BAT+ and BAT- pads on the back of the board. The onboard BQ25101 chip handles charging automatically when USB is connected.

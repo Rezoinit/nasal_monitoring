@@ -6,7 +6,7 @@ The threshold calibration tool finds per-participant signal thresholds before a 
 
 ## Running the Tool
 
-    python analysis/threshold_server.py
+    python calibration/threshold_server.py
 
 Chrome opens automatically at `http://localhost:5500`.
 

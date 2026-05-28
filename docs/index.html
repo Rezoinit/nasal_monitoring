@@ -550,6 +550,38 @@ const LIVE_CARD = {
 };
 
 // ═══════════════════════════════════════════════
+// PEAK-TO-PEAK ACCUMULATOR
+// Firmware now outputs raw ADC at ~100-200 Hz.
+// We window 60ms of samples and compute max-min
+// before passing to handleReading, so m1/m2 are
+// still peak-to-peak amplitude values as expected.
+// ═══════════════════════════════════════════════
+const P2P_WINDOW_MS = 60;
+let p2pBuffer = [], p2pTimer = null;
+
+function pushToAccumulator(d) {
+  p2pBuffer.push({m1: d.m1, m2: d.m2});
+  if (!p2pTimer) {
+    p2pTimer = setInterval(() => {
+      if (!p2pBuffer.length) return;
+      const m1v = p2pBuffer.map(r => r.m1);
+      const m2v = p2pBuffer.map(r => r.m2);
+      const agg = {
+        m1: Math.max(...m1v) - Math.min(...m1v),
+        m2: Math.max(...m2v) - Math.min(...m2v),
+      };
+      p2pBuffer = [];
+      handleReading(agg);
+    }, P2P_WINDOW_MS);
+  }
+}
+
+function resetAccumulator() {
+  if (p2pTimer) { clearInterval(p2pTimer); p2pTimer = null; }
+  p2pBuffer = [];
+}
+
+// ═══════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════
 let port, reader, lineBuffer='';
@@ -618,6 +650,7 @@ async function connectDevice(){
 
 async function disconnectDevice(){
   isConnected=false;
+  resetAccumulator();
   if(sessionTimer) clearInterval(sessionTimer);
   if(calTimer) clearInterval(calTimer);
   try{if(reader){await reader.cancel();reader=null;}if(port){await port.close();port=null;}}catch(e){}
@@ -625,6 +658,7 @@ async function disconnectDevice(){
 }
 
 function goRecalibrate(){
+  resetAccumulator();
   if(sessionTimer) clearInterval(sessionTimer);
   sessionLog=[];
   buildPicker();
@@ -643,7 +677,7 @@ async function readLoop(){
       for(const line of lines){
         const t=line.trim();
         if(!t||t.includes('"status"')) continue;
-        try{const d=JSON.parse(t);if('m1' in d) handleReading(d);}catch(e){}
+        try{const d=JSON.parse(t);if('m1' in d) pushToAccumulator(d);}catch(e){}
       }
     }
   }catch(e){if(isConnected) showError('Serial connection lost.');}

@@ -12,7 +12,8 @@ build/
 develop-eggs/
 dist/
 .DS_Store    
-*.csv             
+*.csv
+calibration/*.json   # session threshold outputs
 downloads/
 eggs/
 .eggs/
