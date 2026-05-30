@@ -220,6 +220,7 @@ live_plot.py            Full real-time analysis dashboard
 
 Documentation: [Setup](docs/SETUP.md) · [Arduino](docs/ARDUINO.md) · [API](docs/API.md) · [Calibration](docs/CALIBRATION.md)
 
+Parts of this codebase were developed with Claude.
 ---
 
 ## License
