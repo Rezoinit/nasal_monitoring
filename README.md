@@ -217,10 +217,11 @@ docs/                   Web app (index.html) and documentation
 arduino/                Arduino sketch for the XIAO board
 live_plot.py            Full real-time analysis dashboard
 ```
+Parts of this codebase were developed with Claude.
 
 Documentation: [Setup](docs/SETUP.md) · [Arduino](docs/ARDUINO.md) · [API](docs/API.md) · [Calibration](docs/CALIBRATION.md)
 
-Parts of this codebase were developed with Claude.
+
 ---
 
 ## License
